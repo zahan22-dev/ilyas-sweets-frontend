@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+:root {
+  --color-primary: #701515;
+  --color-secondary: #E10369;
+  --color-accent: #FFC702;
+  --color-bg: #FEFFFF;
+  --color-text: #111111;
+  --gradient-primary: linear-gradient(135deg, #FFC702 0%, #FF8A00 100%);
+  --gradient-accent: linear-gradient(135deg, #701515 0%, #E10369 100%);
+}
+
+@theme inline {
+  --color-primary: var(--color-primary);
+  --color-secondary: var(--color-secondary);
+  --color-accent: var(--color-accent);
+  --color-bg: var(--color-bg);
+  --color-text: var(--color-text);
+  --color-background: var(--color-bg);
+  --color-foreground: var(--color-text);
+  --font-heading: var(--font-poppins);
+  --font-body: var(--font-inter);
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-body), sans-serif;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading), sans-serif;
+}
+
+.gradient-primary {
+  background: var(--gradient-primary);
+}
+
+.gradient-accent {
+  background: var(--gradient-accent);
+}
+
+.text-gradient-primary {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
