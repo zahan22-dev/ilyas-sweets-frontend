@@ -24,7 +24,7 @@ export default function Categories() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
           {CATEGORIES.map((category, i) => (
             <Link 
-              href={`/category/${category.name.toLowerCase()}`} 
+              href={`/category/${category.slug}`} 
               key={category.id}
               className={`group relative rounded-[3rem] overflow-hidden block bg-black hover:shadow-[0_30px_60px_rgba(255,199,2,0.15)] hover:-translate-y-4 transition-all duration-500 ${i === 0 || i === 3 ? "h-[400px] lg:h-[550px]" : "h-[400px] lg:h-[450px] lg:mt-12"}`}
             >
