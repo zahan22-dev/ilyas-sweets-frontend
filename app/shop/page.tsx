@@ -84,43 +84,42 @@ export default function Shop() {
 
         {/* Product Grid */}
         <div className="w-full lg:w-3/4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-32 pt-20">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 mt-10">
             {PRODUCTS.map((product) => (
-              <Link 
+              <Link
                 href={`/product/${product.slug}`}
                 key={product.id}
-                className="bg-white rounded-[3rem] p-8 pt-40 relative shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] border-4 border-transparent hover:border-[#E10369]/20 transition-all duration-500 hover:shadow-[0_40px_80px_-20px_rgba(225,3,105,0.2)] hover:-translate-y-4 group flex flex-col justify-between"
+                className="bg-white rounded-2xl md:rounded-3xl relative shadow-sm hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] border border-gray-100 transition-all duration-300 group flex flex-col h-full overflow-hidden"
               >
-                {/* Out of bounds image */}
-                <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-56 h-56 rounded-full shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] border-[10px] border-white overflow-hidden bg-gray-50 z-20 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                {/* Square Image Container */}
+                <div className="relative aspect-square w-full overflow-hidden bg-gray-50 border-b border-gray-100">
                   <Image
                     src={product.image}
                     alt={product.name}
                     fill
-                    className="object-cover"
+                    className="object-cover group-hover:scale-110 transition-transform duration-700"
                   />
+                  <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-[#111111] px-3 py-1 rounded-full text-[10px] md:text-[11px] font-black z-10 shadow-sm tracking-widest uppercase">
+                    {product.category}
+                  </div>
                 </div>
 
-                <div className="absolute top-6 right-6 bg-[#FFC702] text-[#111111] px-4 py-1.5 rounded-full text-[12px] font-black z-10 shadow-sm tracking-widest uppercase">
-                  {product.category}
-                </div>
+                {/* Product Info */}
+                <div className="p-4 md:p-5 flex flex-col flex-grow">
+                  <div className="mb-4 flex-grow">
+                    <h3 className="text-lg md:text-xl font-black font-heading text-[#111111] leading-tight group-hover:text-[#E10369] transition-colors tracking-tight mb-2 uppercase line-clamp-2">
+                      {product.name}
+                    </h3>
+                    <span className="text-xl md:text-2xl font-black text-[#E10369] block">
+                      Rs. {product.price}
+                    </span>
+                  </div>
 
-                <div className="text-center mb-8 flex-grow">
-                  <h3 className="text-2xl lg:text-3xl font-black font-heading text-[#111111] leading-tight group-hover:text-[#701515] transition-colors tracking-tight mb-3 uppercase">
-                    {product.name}
-                  </h3>
-                  <span className="text-3xl font-black text-[#E10369] block">
-                    Rs. {product.price}
-                  </span>
-                </div>
-
-                <button className="w-full py-5 rounded-full font-black uppercase tracking-[0.15em] transition-all duration-500 flex items-center justify-center gap-3 relative overflow-hidden group/btn bg-linear-to-r from-[#E10369] to-[#701515] text-white shadow-[0_15px_30px_rgba(225,3,105,0.3)] hover:shadow-[0_20px_40px_rgba(225,3,105,0.5)] hover:scale-[1.02]">
-                  <span className="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-500 ease-out"></span>
-                  <span className="relative z-10 flex items-center gap-2 text-[15px]">
+                  <button className="w-full py-3 rounded-xl font-black uppercase tracking-[0.1em] transition-all duration-300 flex items-center justify-center gap-2 bg-[#FFC702] text-[#111111] hover:bg-[#e6b300] hover:shadow-[0_10px_20px_rgba(255,199,2,0.3)] hover:scale-[1.02] text-[12px] md:text-[14px]">
                     Add to Cart
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="group-hover/btn:translate-x-1 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                  </span>
-                </button>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                  </button>
+                </div>
               </Link>
             ))}
           </div>
