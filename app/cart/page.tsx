@@ -15,7 +15,7 @@ export default function Cart() {
       <div className="container mx-auto px-6 lg:px-12">
         <div className="mb-16">
           <h1 className="text-6xl md:text-8xl lg:text-[7rem] font-black font-heading text-[#111111] tracking-tighter leading-[0.85] uppercase drop-shadow-sm">
-            Your <br/><span className="text-[#E10369] italic pr-4">Basket.</span>
+            Your <br/><span className="text-[#FFC702] italic pr-4">Basket.</span>
           </h1>
         </div>
 
@@ -35,9 +35,9 @@ export default function Cart() {
                     <Image src={item.image} alt={item.name} fill className="object-cover" />
                   </div>
                   <div className="flex flex-col gap-2">
-                    <h3 className="text-2xl font-black font-heading text-[#111111] uppercase tracking-tight leading-tight group-hover:text-[#E10369] transition-colors">{item.name}</h3>
+                    <h3 className="text-2xl font-black font-heading text-[#111111] uppercase tracking-tight leading-tight group-hover:text-[#FFC702] transition-colors">{item.name}</h3>
                     <span className="text-lg font-bold text-gray-400 uppercase tracking-widest">{item.category}</span>
-                    <button className="text-[#701515] text-sm font-black uppercase tracking-widest text-left hover:text-[#E10369] mt-2 flex items-center gap-1 w-fit">
+                    <button className="text-[#701515] text-sm font-black uppercase tracking-widest text-left hover:text-[#FFC702] mt-2 flex items-center gap-1 w-fit">
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                       Remove
                     </button>
@@ -46,9 +46,9 @@ export default function Cart() {
                 
                 <div className="col-span-1 md:col-span-3 flex justify-center">
                   <div className="flex items-center bg-gray-100 rounded-full p-1.5 border-2 border-gray-200">
-                    <button className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#111111] font-black hover:text-[#E10369] transition-colors shadow-sm">-</button>
+                    <button className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#111111] font-black hover:text-[#FFC702] transition-colors shadow-sm">-</button>
                     <span className="w-12 text-center font-black text-xl text-[#111111]">1</span>
-                    <button className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#111111] font-black hover:text-[#E10369] transition-colors shadow-sm">+</button>
+                    <button className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#111111] font-black hover:text-[#FFC702] transition-colors shadow-sm">+</button>
                   </div>
                 </div>
 
@@ -59,7 +59,7 @@ export default function Cart() {
             ))}
 
             <div className="pt-8">
-              <Link href="/shop" className="inline-flex items-center gap-3 text-[#E10369] font-black uppercase tracking-widest hover:text-[#111111] transition-colors">
+              <Link href="/shop" className="inline-flex items-center gap-3 text-[#FFC702] font-black uppercase tracking-widest hover:text-[#111111] transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                 Continue Shopping
               </Link>
@@ -69,7 +69,7 @@ export default function Cart() {
           {/* Order Summary */}
           <div className="w-full lg:w-[35%]">
             <div className="bg-[#111111] rounded-[3rem] p-10 shadow-[0_30px_60px_rgba(0,0,0,0.2)] text-white sticky top-40 overflow-hidden z-10">
-              <div className="absolute -top-32 -right-32 w-64 h-64 bg-[#E10369] rounded-full blur-[80px] opacity-20 -z-10"></div>
+              <div className="absolute -top-32 -right-32 w-64 h-64 bg-[#FFC702] rounded-full blur-[80px] opacity-20 -z-10"></div>
               
               <h3 className="text-3xl font-black font-heading uppercase tracking-tighter mb-10 border-b-2 border-white/10 pb-6">Order Summary</h3>
               
@@ -88,7 +88,7 @@ export default function Cart() {
                 </div>
                 <div className="pt-6 border-t-2 border-white/10 flex justify-between items-center">
                   <span className="text-2xl uppercase tracking-widest">Total</span>
-                  <span className="text-4xl font-black text-[#E10369]">Rs. {subtotal + 150}</span>
+                  <span className="text-4xl font-black text-[#FFC702]">Rs. {subtotal + 150}</span>
                 </div>
               </div>
 

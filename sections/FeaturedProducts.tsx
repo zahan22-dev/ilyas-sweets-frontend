@@ -11,7 +11,7 @@ export default function FeaturedProducts() {
       <div className="container mx-auto px-4 md:px-6 lg:px-12">
         <div className="text-center max-w-4xl mx-auto mb-16 md:mb-24">
           <h2 className="text-4xl md:text-6xl lg:text-[5rem] font-black font-heading text-[#111111] mb-6 tracking-tighter leading-[0.9] uppercase">
-            Signature <span className="text-[#E10369]">Delights</span>
+            Signature <span className="text-[#FFC702]">Delights</span>
           </h2>
           <p className="text-lg md:text-xl text-[#111111]/70 font-bold tracking-wide">
             Taste the authentic flavors in every bite. Prepared fresh daily.
@@ -41,10 +41,10 @@ export default function FeaturedProducts() {
               {/* Product Info */}
               <div className="p-4 md:p-5 flex flex-col flex-grow">
                 <div className="mb-4 flex-grow">
-                  <h3 className="text-lg md:text-xl font-black font-heading text-[#111111] leading-tight group-hover:text-[#E10369] transition-colors tracking-tight mb-2 uppercase line-clamp-2">
+                  <h3 className="text-lg md:text-xl font-black font-heading text-[#111111] leading-tight group-hover:text-[#FFC702] transition-colors tracking-tight mb-2 uppercase line-clamp-2">
                     {product.name}
                   </h3>
-                  <span className="text-xl md:text-2xl font-black text-[#E10369] block">
+                  <span className="text-xl md:text-2xl font-black text-[#FFC702] block">
                     Rs. {product.price}
                   </span>
                 </div>

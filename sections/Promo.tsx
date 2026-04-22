@@ -23,7 +23,7 @@ export default function Promo() {
           Get 20% off your first box of premium sweets. Don't wait�offer ends tonight!
         </p>
         
-        <button className="px-16 py-7 bg-white text-[#701515] font-black text-2xl tracking-[0.15em] uppercase rounded-full hover:bg-[#FFC702] hover:text-[#111111] hover:scale-110 hover:shadow-[0_30px_60px_rgba(255,199,2,0.4)] transition-all duration-300 transform -rotate-2 group">
+        <button className="px-10 py-5 md:px-16 md:py-7 bg-[#FFC702] text-[#111111] font-black text-lg md:text-2xl tracking-[0.15em] uppercase rounded-full hover:bg-[#e6b300] hover:scale-105 hover:shadow-[0_20px_40px_rgba(255,199,2,0.4)] transition-all duration-300 transform -rotate-2 group">
           <span className="inline-block group-hover:-translate-y-1 transition-transform">Claim 20% Off Now</span>
         </button>
       </div>

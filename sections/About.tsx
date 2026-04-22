@@ -39,7 +39,7 @@ export default function About() {
             </div>
             
             {/* Experience Badge */}
-            <div className="absolute -bottom-12 -right-8 bg-[#E10369] text-white w-48 h-48 rounded-full flex flex-col items-center justify-center shadow-[0_20px_40px_rgba(225,3,105,0.4)] z-30 border-[12px] border-[#FEFFFF] animate-[bounce_5s_ease-in-out_infinite]">
+            <div className="absolute -bottom-12 -right-8 bg-[#FFC702] text-white w-48 h-48 rounded-full flex flex-col items-center justify-center shadow-[0_20px_40px_rgba(225,3,105,0.4)] z-30 border-[12px] border-[#FEFFFF] animate-[bounce_5s_ease-in-out_infinite]">
               <span className="text-6xl font-black font-heading tracking-tighter leading-none">20+</span>
               <span className="text-[14px] uppercase font-black text-center leading-tight mt-2 tracking-[0.2em] text-[#FFC702]">Years of<br/>Legacy</span>
             </div>
@@ -47,8 +47,8 @@ export default function About() {
           {/* Text Content */}
           <div className="w-full lg:w-1/2">
             <div className="flex items-center gap-6 mb-8">
-              <span className="w-20 h-2 bg-[#E10369] rounded-full"></span>
-              <span className="text-[#E10369] font-black uppercase tracking-[0.2em] text-[16px]">Our Story</span>
+              <span className="w-20 h-2 bg-[#FFC702] rounded-full"></span>
+              <span className="text-[#FFC702] font-black uppercase tracking-[0.2em] text-[16px]">Our Story</span>
             </div>
             
             <h2 className="text-6xl md:text-7xl lg:text-[6.5rem] font-black font-heading text-[#111111] mb-12 leading-[0.85] tracking-tighter uppercase drop-shadow-sm">

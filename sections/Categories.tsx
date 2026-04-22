@@ -11,7 +11,7 @@ export default function Categories() {
             <h2 className="text-5xl md:text-7xl lg:text-[6rem] font-black font-heading text-white mb-6 tracking-tighter leading-[0.9] uppercase">
               Crave <br/><span className="text-[#FFC702]">It All.</span>
             </h2>
-            <div className="w-32 h-3 bg-[#E10369] rounded-full"></div>
+            <div className="w-32 h-3 bg-[#FFC702] rounded-full"></div>
           </div>
           <Link href="/shop" className="inline-flex items-center gap-3 font-black text-[#FFC702] hover:text-white transition-colors text-xl tracking-widest uppercase group">
             View Menu

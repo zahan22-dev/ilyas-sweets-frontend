@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { CATEGORIES } from "@/constants/data";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -51,17 +50,17 @@ export default function Header() {
               <Link
                 key={item}
                 href={`/${item === "Home" ? "" : item.toLowerCase()}`}
-                className="relative text-[#111111] hover:text-[#E10369] transition-colors duration-300 group py-2 font-bold uppercase tracking-widest text-sm"
+                className="relative text-[#111111] hover:text-[#FFC702] transition-colors duration-300 group py-2 font-bold uppercase tracking-widest text-sm"
               >
                 {item}
-                <span className="absolute bottom-0 left-0 w-0 h-1 bg-linear-to-r from-[#E10369] to-[#FFC702] transition-all duration-300 group-hover:w-full opacity-0 group-hover:opacity-100 rounded-t-sm"></span>
+                <span className="absolute bottom-0 left-0 w-0 h-1 bg-linear-to-r from-[#FFC702] to-[#FFC702] transition-all duration-300 group-hover:w-full opacity-0 group-hover:opacity-100 rounded-t-sm"></span>
               </Link>
             ))}
           </nav>
 
           {/* Actions */}
           <div className="flex items-center gap-6 md:gap-8">
-            <Link href="/cart" className="relative text-[#111111] hover:text-[#E10369] transition-all duration-300 group cursor-pointer block">
+            <Link href="/cart" className="relative text-[#111111] hover:text-[#FFC702] transition-all duration-300 group cursor-pointer block">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="26"
@@ -78,30 +77,13 @@ export default function Header() {
                 <circle cx="19" cy="21" r="1" />
                 <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
               </svg>
-              <span className="absolute -top-2 -right-2 bg-[#E10369] text-white text-[10px] md:text-[11px] font-black w-5 h-5 md:w-6 md:h-6 rounded-full flex items-center justify-center shadow-md border-2 border-white">
+              <span className="absolute -top-2 -right-2 bg-[#FFC702] text-[#111111] text-[10px] md:text-[11px] font-black w-5 h-5 md:w-6 md:h-6 rounded-full flex items-center justify-center shadow-md border-2 border-white">
                 3
               </span>
             </Link>
-            <Link href="/shop" className="hidden md:flex items-center justify-center bg-linear-to-r from-[#E10369] to-[#701515] text-white font-black py-2.5 px-6 lg:py-3 lg:px-8 rounded-full hover:shadow-[0_15px_30px_rgba(225,3,105,0.4)] hover:scale-105 transition-all duration-300 text-[13px] lg:text-[14px] tracking-[0.15em] uppercase">
+            <Link href="/shop" className="hidden md:flex items-center justify-center bg-[#FFC702] text-[#111111] font-black py-2.5 px-6 lg:py-3 lg:px-8 rounded-full hover:bg-[#e6b300] hover:shadow-[0_15px_30px_rgba(255,199,2,0.4)] hover:scale-105 transition-all duration-300 text-[13px] lg:text-[14px] tracking-[0.15em] uppercase">
               Order Now
             </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* Categories Sub-Header (Sticky & Scrollable) */}
-      <div className="border-t border-gray-100 bg-gray-50/80 backdrop-blur-md">
-        <div className="container mx-auto px-4 md:px-6 lg:px-12">
-          <div className="flex items-center gap-6 overflow-x-auto py-2.5 md:py-3 scroll-smooth" style={{ scrollbarWidth: "none" }}>
-            {CATEGORIES.map(c => (
-              <Link 
-                href={`/category/${c.slug}`} 
-                key={c.id} 
-                className="whitespace-nowrap text-[12px] md:text-[13px] font-black uppercase tracking-[0.15em] text-gray-500 hover:text-[#E10369] transition-colors py-1"
-              >
-                {c.name}
-              </Link>
-            ))}
           </div>
         </div>
       </div>
@@ -123,7 +105,7 @@ export default function Header() {
           </nav>
           <Link 
             href="/shop" 
-            className="w-full flex items-center justify-center bg-linear-to-r from-[#E10369] to-[#701515] text-white font-black py-4 rounded-xl text-[15px] tracking-[0.15em] uppercase shadow-lg mt-2"
+            className="w-full flex items-center justify-center bg-[#FFC702] text-[#111111] hover:bg-[#e6b300] font-black py-4 rounded-xl text-[15px] tracking-[0.15em] uppercase shadow-lg mt-2 transition-colors"
             onClick={() => setIsMenuOpen(false)}
           >
             Order Now

@@ -14,7 +14,7 @@ export default function DeliveryInfo() {
 
           {/* Item 2 */}
           <div className="flex flex-col items-center text-center p-6 border-y md:border-y-0 md:border-x border-white/10">
-            <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-6 text-[#E10369]">
+            <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-6 text-[#FFC702]">
               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2 2 0 0 0-.832-1.664L12 12l-4.168 4.164A2 2 0 0 0 7 17.828V22"/><path d="M7 2v4.172a2 2 0 0 0 .832 1.664L12 12l4.168-4.164A2 2 0 0 0 17 6.172V2"/></svg>
             </div>
             <h3 className="text-xl font-black uppercase tracking-widest mb-3">Fast Delivery</h3>

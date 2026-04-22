@@ -44,17 +44,17 @@ export default function Shop() {
               <ul className="space-y-4">
                 <li>
                   <label className="flex items-center gap-3 cursor-pointer group">
-                    <div className="w-6 h-6 rounded-md border-2 border-[#E10369] flex items-center justify-center bg-[#E10369] text-white">
+                    <div className="w-6 h-6 rounded-md border-2 border-[#FFC702] flex items-center justify-center bg-[#FFC702] text-white">
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                     </div>
-                    <span className="text-lg font-bold text-[#111111] group-hover:text-[#E10369] transition-colors">All Items</span>
+                    <span className="text-lg font-bold text-[#111111] group-hover:text-[#FFC702] transition-colors">All Items</span>
                   </label>
                 </li>
                 {CATEGORIES.map(c => (
                   <li key={c.id}>
                     <label className="flex items-center gap-3 cursor-pointer group">
-                      <div className="w-6 h-6 rounded-md border-2 border-gray-300 group-hover:border-[#E10369] transition-colors"></div>
-                      <span className="text-lg font-bold text-gray-500 group-hover:text-[#E10369] transition-colors">{c.name}</span>
+                      <div className="w-6 h-6 rounded-md border-2 border-gray-300 group-hover:border-[#FFC702] transition-colors"></div>
+                      <span className="text-lg font-bold text-gray-500 group-hover:text-[#FFC702] transition-colors">{c.name}</span>
                     </label>
                   </li>
                 ))}
@@ -64,7 +64,7 @@ export default function Shop() {
             <div>
               <h4 className="text-lg font-black uppercase text-[#111111] mb-4">Sort By</h4>
               <div className="relative">
-                <select className="w-full appearance-none bg-gray-50 border-2 border-gray-200 text-[#111111] font-bold text-lg rounded-xl px-5 py-4 outline-none focus:border-[#E10369] transition-colors">
+                <select className="w-full appearance-none bg-gray-50 border-2 border-gray-200 text-[#111111] font-bold text-lg rounded-xl px-5 py-4 outline-none focus:border-[#FFC702] transition-colors">
                   <option>Featured</option>
                   <option>Price: Low to High</option>
                   <option>Price: High to Low</option>
@@ -76,7 +76,7 @@ export default function Shop() {
               </div>
             </div>
             
-            <button className="w-full mt-10 py-4 bg-[#111111] text-white font-black uppercase tracking-widest rounded-xl hover:bg-[#E10369] transition-colors duration-300">
+            <button className="w-full mt-10 py-4 bg-[#FFC702] text-[#111111] font-black uppercase tracking-widest rounded-xl hover:bg-[#e6b300] hover:shadow-[0_10px_20px_rgba(255,199,2,0.3)] transition-all duration-300">
               Apply Filters
             </button>
           </div>
@@ -107,10 +107,10 @@ export default function Shop() {
                 {/* Product Info */}
                 <div className="p-4 md:p-5 flex flex-col flex-grow">
                   <div className="mb-4 flex-grow">
-                    <h3 className="text-lg md:text-xl font-black font-heading text-[#111111] leading-tight group-hover:text-[#E10369] transition-colors tracking-tight mb-2 uppercase line-clamp-2">
+                    <h3 className="text-lg md:text-xl font-black font-heading text-[#111111] leading-tight group-hover:text-[#FFC702] transition-colors tracking-tight mb-2 uppercase line-clamp-2">
                       {product.name}
                     </h3>
-                    <span className="text-xl md:text-2xl font-black text-[#E10369] block">
+                    <span className="text-xl md:text-2xl font-black text-[#FFC702] block">
                       Rs. {product.price}
                     </span>
                   </div>
@@ -126,16 +126,16 @@ export default function Shop() {
           
           {/* Pagination UI */}
           <div className="mt-32 flex justify-center gap-4">
-            <button className="w-14 h-14 rounded-full bg-white border-2 border-gray-200 flex items-center justify-center text-[#111111] font-black hover:border-[#E10369] hover:text-[#E10369] transition-colors">
+            <button className="w-14 h-14 rounded-full bg-white border-2 border-gray-200 flex items-center justify-center text-[#111111] font-black hover:border-[#FFC702] hover:text-[#111111] transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
             </button>
-            <button className="w-14 h-14 rounded-full bg-[#E10369] shadow-[0_10px_20px_rgba(225,3,105,0.4)] flex items-center justify-center text-white font-black text-xl">
+            <button className="w-14 h-14 rounded-full bg-[#FFC702] shadow-[0_10px_20px_rgba(255,199,2,0.3)] flex items-center justify-center text-[#111111] font-black text-xl">
               1
             </button>
-            <button className="w-14 h-14 rounded-full bg-white border-2 border-gray-200 flex items-center justify-center text-[#111111] font-black text-xl hover:border-[#E10369] hover:text-[#E10369] transition-colors">
+            <button className="w-14 h-14 rounded-full bg-white border-2 border-gray-200 flex items-center justify-center text-[#111111] font-black text-xl hover:border-[#FFC702] hover:text-[#111111] transition-colors">
               2
             </button>
-            <button className="w-14 h-14 rounded-full bg-white border-2 border-gray-200 flex items-center justify-center text-[#111111] font-black hover:border-[#E10369] hover:text-[#E10369] transition-colors">
+            <button className="w-14 h-14 rounded-full bg-white border-2 border-gray-200 flex items-center justify-center text-[#111111] font-black hover:border-[#FFC702] hover:text-[#111111] transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
             </button>
           </div>

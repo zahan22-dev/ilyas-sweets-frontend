@@ -7,7 +7,7 @@ export default function PrivacyPolicy() {
     <main className="bg-[#FEFFFF] min-h-screen pt-40 pb-40">
       <div className="container mx-auto px-6 lg:px-12 max-w-4xl">
         <h1 className="text-5xl md:text-7xl font-black font-heading text-[#111111] tracking-tighter leading-[0.9] uppercase mb-12 drop-shadow-sm">
-          Privacy <span className="text-[#E10369] italic pr-4">Policy.</span>
+          Privacy <span className="text-[#FFC702] italic pr-4">Policy.</span>
         </h1>
         
         <div className="bg-white p-10 md:p-14 rounded-[3rem] shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] border-2 border-gray-50 space-y-10 text-lg text-gray-600 font-bold leading-loose">

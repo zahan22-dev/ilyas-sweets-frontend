@@ -16,9 +16,9 @@ export default async function ProductDetail({ params }: { params: Promise<{ slug
     return (
       <main className="bg-[#FEFFFF] min-h-[80vh] pt-40 pb-40 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-6xl md:text-8xl font-black font-heading text-[#111111] mb-6 uppercase tracking-tighter">Product <span className="text-[#E10369]">Not Found</span></h1>
+          <h1 className="text-6xl md:text-8xl font-black font-heading text-[#111111] mb-6 uppercase tracking-tighter">Product <span className="text-[#FFC702]">Not Found</span></h1>
           <p className="text-2xl text-gray-500 font-bold mb-10">We couldn't find the sweet you're looking for.</p>
-          <Link href="/shop" className="px-12 py-5 bg-linear-to-r from-[#E10369] to-[#701515] text-white font-black rounded-full uppercase tracking-widest hover:scale-105 transition-transform inline-block shadow-lg">
+          <Link href="/shop" className="px-12 py-5 bg-[#FFC702] text-[#111111] font-black rounded-full uppercase tracking-widest hover:bg-[#e6b300] hover:scale-105 transition-all duration-300 inline-block shadow-[0_10px_20px_rgba(255,199,2,0.3)]">
             Back to Shop
           </Link>
         </div>
@@ -34,9 +34,9 @@ export default async function ProductDetail({ params }: { params: Promise<{ slug
       <div className="container mx-auto px-6 lg:px-12">
         {/* Breadcrumb */}
         <div className="flex items-center gap-3 text-sm font-bold tracking-widest uppercase text-gray-400 mb-12">
-          <Link href="/" className="hover:text-[#E10369] transition-colors">Home</Link>
+          <Link href="/" className="hover:text-[#FFC702] transition-colors">Home</Link>
           <span>/</span>
-          <Link href="/shop" className="hover:text-[#E10369] transition-colors">Shop</Link>
+          <Link href="/shop" className="hover:text-[#FFC702] transition-colors">Shop</Link>
           <span>/</span>
           <span className="text-[#111111]">{product.category}</span>
         </div>
@@ -48,7 +48,7 @@ export default async function ProductDetail({ params }: { params: Promise<{ slug
             {/* Thumbnails */}
             <div className="flex md:flex-col gap-4 order-2 md:order-1">
               {[1, 2, 3].map((thumb) => (
-                <div key={thumb} className={`w-20 h-20 md:w-28 md:h-28 rounded-3xl overflow-hidden cursor-pointer border-4 ${thumb === 1 ? "border-[#E10369]" : "border-transparent hover:border-[#FFC702]"} transition-all duration-300 relative`}>
+                <div key={thumb} className={`w-20 h-20 md:w-28 md:h-28 rounded-3xl overflow-hidden cursor-pointer border-4 ${thumb === 1 ? "border-[#FFC702]" : "border-transparent hover:border-[#FFC702]"} transition-all duration-300 relative`}>
                   <Image 
                     src={product.image} 
                     alt={`Thumbnail ${thumb}`} 
@@ -81,7 +81,7 @@ export default async function ProductDetail({ params }: { params: Promise<{ slug
             </h1>
             
             <div className="flex items-center gap-6 mb-8">
-              <span className="text-5xl md:text-6xl font-black text-[#E10369] tracking-tighter">
+              <span className="text-5xl md:text-6xl font-black text-[#FFC702] tracking-tighter">
                 Rs. {product.price}
               </span>
               <div className="flex items-center text-[#FFC702] gap-1 bg-[#111111] px-4 py-2 rounded-full shadow-lg">
@@ -102,13 +102,13 @@ export default async function ProductDetail({ params }: { params: Promise<{ slug
             <div className="space-y-8">
               {/* Custom Weight Option */}
               <div className="space-y-4">
-                <span className="text-sm font-black uppercase tracking-widest text-gray-500">Select Weight</span>
+                <span className="text-sm font-black uppercase tracking-widest text-[#111111]">Select Weight</span>
                 <div className="flex flex-wrap gap-3">
                   {['250g', '500g', '1kg', '2kg'].map((weight, idx) => (
                     <button 
                       key={weight} 
                       className={`px-6 py-3 rounded-xl font-bold transition-all duration-300 border-2 ${
-                        idx === 2 ? 'border-[#E10369] bg-[#E10369]/5 text-[#E10369]' : 'border-gray-200 text-gray-600 hover:border-[#E10369] hover:text-[#E10369]'
+                        idx === 2 ? 'border-[#FFC702] bg-[#FFC702]/10 text-[#111111]' : 'border-gray-200 text-gray-600 hover:border-[#FFC702] hover:text-[#111111]'
                       }`}
                     >
                       {weight}
@@ -119,23 +119,23 @@ export default async function ProductDetail({ params }: { params: Promise<{ slug
 
               {/* Quantity */}
               <div className="flex items-center gap-6">
-                <span className="text-sm font-black uppercase tracking-widest text-gray-500">Quantity</span>
+                <span className="text-sm font-black uppercase tracking-widest text-[#111111]">Quantity</span>
                 <div className="flex items-center bg-gray-100 rounded-full p-1.5 border-2 border-gray-200">
-                  <button className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#111111] font-black text-xl hover:text-[#E10369] transition-colors shadow-sm">-</button>
+                  <button className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#111111] font-black text-xl hover:text-[#FFC702] transition-colors shadow-sm">-</button>
                   <span className="w-14 text-center font-black text-xl text-[#111111]">1</span>
-                  <button className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#111111] font-black text-xl hover:text-[#E10369] transition-colors shadow-sm">+</button>
+                  <button className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#111111] font-black text-xl hover:text-[#FFC702] transition-colors shadow-sm">+</button>
                 </div>
               </div>
 
               {/* Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                <button className="flex-1 py-5 rounded-2xl font-black uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-3 relative overflow-hidden group/btn bg-[#FFC702] text-[#111111] shadow-[0_10px_20px_rgba(255,199,2,0.3)] hover:shadow-[0_15px_30px_rgba(255,199,2,0.5)] hover:scale-[1.02] text-[15px] hover:bg-[#e6b300]">
+                <button className="flex-1 py-5 rounded-2xl font-black uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-3 bg-[#FFC702] text-[#111111] shadow-[0_10px_20px_rgba(255,199,2,0.3)] hover:shadow-[0_15px_30px_rgba(255,199,2,0.5)] hover:scale-[1.02] text-[15px] hover:bg-[#e6b300]">
                   <span className="relative z-10 flex items-center gap-3">
                     Add to Cart
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="group-hover/btn:translate-x-1 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                   </span>
                 </button>
-                <button className="flex-1 py-5 rounded-2xl font-black uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-3 bg-[#111111] text-[#FFC702] hover:bg-[#FFC702] hover:text-[#111111] hover:scale-[1.02] text-[15px] border-4 border-[#111111] hover:border-transparent hover:shadow-[0_15px_30px_rgba(0,0,0,0.2)]">
+                <button className="flex-1 py-5 rounded-2xl font-black uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-3 bg-[#FFC702] text-[#111111] shadow-[0_10px_20px_rgba(255,199,2,0.3)] hover:shadow-[0_15px_30px_rgba(255,199,2,0.5)] hover:scale-[1.02] text-[15px] hover:bg-[#e6b300]">
                   Buy Now
                 </button>
               </div>
@@ -144,7 +144,7 @@ export default async function ProductDetail({ params }: { params: Promise<{ slug
             {/* Perks */}
             <div className="mt-16 pt-10 border-t-2 border-gray-100 grid grid-cols-2 gap-6">
               <div className="flex items-center gap-5">
-                <div className="w-16 h-16 rounded-full bg-[#E10369]/10 flex items-center justify-center text-[#E10369] group hover:bg-[#E10369] hover:text-white transition-colors cursor-default">
+                <div className="w-16 h-16 rounded-full bg-[#FFC702]/10 flex items-center justify-center text-[#FFC702] group hover:bg-[#FFC702] hover:text-white transition-colors cursor-default">
                   <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                 </div>
                 <span className="font-black text-[#111111] uppercase tracking-wide text-lg">Secure<br/>Payment</span>
@@ -163,7 +163,7 @@ export default async function ProductDetail({ params }: { params: Promise<{ slug
         <div className="mb-40">
           <div className="flex items-center gap-6 mb-12">
             <h2 className="text-4xl md:text-5xl lg:text-[4.5rem] font-black font-heading text-[#111111] tracking-tighter uppercase drop-shadow-sm">
-              The <span className="text-[#E10369]">Details</span>
+              The <span className="text-[#FFC702]">Details</span>
             </h2>
             <div className="flex-1 h-2 bg-gray-100 rounded-full mt-4"></div>
           </div>
@@ -199,7 +199,7 @@ export default async function ProductDetail({ params }: { params: Promise<{ slug
                 You May <br/><span className="text-[#FFC702]">Also Like</span>
               </h2>
             </div>
-            <div className="w-32 h-3 bg-[#E10369] rounded-full hidden md:block"></div>
+            <div className="w-32 h-3 bg-[#FFC702] rounded-full hidden md:block"></div>
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 mt-10">
@@ -225,10 +225,10 @@ export default async function ProductDetail({ params }: { params: Promise<{ slug
                 {/* Product Info */}
                 <div className="p-4 md:p-5 flex flex-col flex-grow">
                   <div className="mb-4 flex-grow">
-                    <h3 className="text-lg md:text-xl font-black font-heading text-[#111111] leading-tight group-hover:text-[#E10369] transition-colors tracking-tight mb-2 uppercase line-clamp-2">
+                    <h3 className="text-lg md:text-xl font-black font-heading text-[#111111] leading-tight group-hover:text-[#FFC702] transition-colors tracking-tight mb-2 uppercase line-clamp-2">
                       {p.name}
                     </h3>
-                    <span className="text-xl md:text-2xl font-black text-[#E10369] block">
+                    <span className="text-xl md:text-2xl font-black text-[#FFC702] block">
                       Rs. {p.price}
                     </span>
                   </div>
