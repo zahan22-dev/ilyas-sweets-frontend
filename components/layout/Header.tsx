@@ -87,14 +87,14 @@ export default function Header() {
                   className="absolute top-full left-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50"
                 >
                   <Link
-                    href="/terms-and-conditions"
+                    href="/terms"
                     className="block px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-yellow-50 hover:text-[#FFC702] transition-colors"
                     onClick={() => setIsLegalOpen(false)}
                   >
                     Terms & Conditions
                   </Link>
                   <Link
-                    href="/privacy-policy"
+                    href="/privacy"
                     className="block px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-yellow-50 hover:text-[#FFC702] transition-colors"
                     onClick={() => setIsLegalOpen(false)}
                   >
