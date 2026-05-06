@@ -1,4 +1,4 @@
-import { categoriesService } from "@/lib/services/categories";
+import { categoriesService, Category } from "@/lib/services/categories";
 import ShopProducts from "@/components/product/ShopProducts";
 
 export const metadata = {
@@ -6,9 +6,15 @@ export const metadata = {
   description: "Explore our complete collection of premium sweets, savory snacks, and traditional desserts.",
 };
 
-export default async function Shop() {
-  // Fetch categories for filter sidebar
-  const categories = await categoriesService.getAll();
+export default async function ShopPage() {
+  let categories: Category[] = [];
+
+  try {
+    categories = await categoriesService.getAll();
+  } catch (error) {
+    console.error('Failed to fetch categories:', error);
+    // Return empty array on error - will show empty state
+  }
 
   return (
     <main className="bg-[#FEFFFF] min-h-screen">
