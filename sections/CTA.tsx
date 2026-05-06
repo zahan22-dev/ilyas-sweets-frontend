@@ -6,9 +6,9 @@ export default function CTA() {
       {/* Decorative background image overlay */}
       <div className="absolute inset-0 opacity-20 mix-blend-overlay">
         <Image 
-          src="https://images.unsplash.com/photo-1596803244618-8dbee441d70b?q=80&w=2000&auto=format&fit=crop" 
+          src="/Logo.png" 
           alt="Background Texture" 
-          fill 
+          fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" 
           className="object-cover grayscale"
         />
       </div>

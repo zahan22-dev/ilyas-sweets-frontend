@@ -4,7 +4,7 @@ import { CATEGORIES } from "@/constants/data";
 
 export default function Hero() {
   return (
-    <section className="relative pt-24 pb-16 lg:pt-32 lg:pb-20 overflow-hidden bg-[#FFC702]">
+    <section id="hero-section" className="relative pt-16 pb-16 lg:pt-24 lg:pb-20 overflow-hidden bg-[#FFC702]">
       {/* Dynamic Background Shapes */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
         <div className="absolute -top-[20%] -right-[10%] w-[70vw] h-[70vw] bg-linear-to-br from-[#FFD700] to-[#FF8A00] rounded-full blur-[100px] opacity-80 animate-pulse"></div>
@@ -80,34 +80,6 @@ export default function Hero() {
           </div>
         </div>
       </div>
-
-      {/* Floating Categories Strip at Bottom */}
-      <div className="absolute bottom-0 left-0 w-full bg-white/90 backdrop-blur-xl border-t border-white shadow-[0_-10px_40px_rgba(0,0,0,0.05)] z-30">
-        <div className="container mx-auto px-4 md:px-6 lg:px-12">
-          <div className="flex items-center justify-start md:justify-center gap-6 md:gap-14 overflow-x-auto py-4 scroll-smooth [&::-webkit-scrollbar]:hidden" style={{ scrollbarWidth: "none" }}>
-            {CATEGORIES.map(c => (
-              <Link
-                href={`/category/${c.slug}`}
-                key={c.id}
-                className="flex flex-col items-center justify-center min-w-20 group gap-2"
-              >
-                <div className="relative w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden border-[3px] border-white ring-2 ring-gray-100 group-hover:ring-[#FFC702] transition-all duration-300 shadow-sm group-hover:shadow-[0_8px_20px_rgba(255,199,2,0.4)] transform group-hover:-translate-y-1 bg-gray-50 flex-shrink-0">
-                  <Image
-                    src={c.image}
-                    alt={c.name}
-                    fill
-                    className="object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                </div>
-                <span className="text-[12px] md:text-[14px] font-black tracking-widest text-[#111111] group-hover:text-[#FFC702] transition-colors text-center uppercase">
-                  {c.name}
-                </span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </div>
     </section>
   );
 }
-

@@ -34,7 +34,7 @@ export default function Categories() {
               <Image
                 src={category.image}
                 alt={category.name}
-                fill
+                fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="object-cover transition-transform duration-1000 group-hover:scale-125 opacity-70 group-hover:opacity-100"
               />
               
