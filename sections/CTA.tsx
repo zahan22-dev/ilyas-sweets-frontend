@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function CTA() {
   return (
@@ -25,10 +26,12 @@ export default function CTA() {
           </p>
 
           <div className="flex items-center justify-center w-full">
-            <button className="px-8 py-4 md:px-16 md:py-6 bg-[#FFC702] text-[#111111] font-black text-[14px] md:text-xl tracking-[0.15em] md:tracking-[0.2em] uppercase rounded-full hover:scale-105 hover:bg-[#e6b300] hover:shadow-[0_15px_40px_rgba(255,199,2,0.4)] flex items-center justify-center gap-3 md:gap-4 transition-all duration-300 group">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-2 transition-transform md:w-8 md:h-8"><path d="m5 11 4-7"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8c.9 0 1.8-.7 2-1.6l1.7-7.4"/><path d="m9 11 1 9"/><path d="M4.5 15.5h15"/><path d="m15 11-1 9"/></svg>
-              Start Order
-            </button>
+            <Link href="/shop">
+              <button className="px-8 py-4 md:px-16 md:py-6 bg-[#FFC702] text-[#111111] font-black text-[14px] md:text-xl tracking-[0.15em] md:tracking-[0.2em] uppercase rounded-full hover:scale-105 hover:bg-[#e6b300] hover:shadow-[0_15px_40px_rgba(255,199,2,0.4)] flex items-center justify-center gap-3 md:gap-4 transition-all duration-300 group">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-2 transition-transform md:w-8 md:h-8"><path d="m5 11 4-7"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8c.9 0 1.8-.7 2-1.6l1.7-7.4"/><path d="m9 11 1 9"/><path d="M4.5 15.5h15"/><path d="m15 11-1 9"/></svg>
+                Start Order
+              </button>
+            </Link>
           </div>
         </div>
       </div>

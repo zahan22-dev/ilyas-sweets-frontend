@@ -31,10 +31,12 @@ export default function Hero() {
               {/* THE ULTIMATE CTA */}
               <button className="w-full sm:w-auto px-8 py-4 md:px-10 md:py-5 bg-[#FFC702] text-[#111111] font-black rounded-full hover:scale-105 hover:bg-[#e6b300] hover:shadow-[0_20px_50px_rgba(255,199,2,0.4)] transition-all duration-300 text-[14px] md:text-lg tracking-[0.15em] uppercase relative overflow-hidden group">
                 <span className="absolute inset-0 w-full h-full bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></span>
+                <Link href="/shop">
                 <span className="relative z-10 flex items-center justify-center gap-3">
                   Order Right Now
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-2 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                 </span>
+                </Link>
               </button>
             </div>
           </div>

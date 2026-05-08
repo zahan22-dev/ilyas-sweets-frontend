@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Promo() {
   return (
@@ -23,9 +24,11 @@ export default function Promo() {
           Get 20% off your first box of premium sweets. Don't wait�offer ends tonight!
         </p>
         
+        <Link href="/shop">
         <button className="px-10 py-5 md:px-16 md:py-7 bg-[#FFC702] text-[#111111] font-black text-lg md:text-2xl tracking-[0.15em] uppercase rounded-full hover:bg-[#e6b300] hover:scale-105 hover:shadow-[0_20px_40px_rgba(255,199,2,0.4)] transition-all duration-300 transform -rotate-2 group">
           <span className="inline-block group-hover:-translate-y-1 transition-transform">Claim 20% Off Now</span>
         </button>
+        </Link>
       </div>
     </section>
   );

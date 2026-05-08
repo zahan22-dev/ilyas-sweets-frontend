@@ -98,9 +98,9 @@ export default function TermsPage() {
                 If you have any questions or concerns regarding these Terms and Conditions, please reach out to us:
               </p>
               <ul className="list-none pl-0 space-y-2 mt-4 border-l-4 border-[#FFC702] pl-6 py-2 bg-gray-50 rounded-r-2xl">
-                <li><strong>Email:</strong> order@ilyassweets.pk</li>
-                <li><strong>Phone:</strong> +92 300 1234567</li>
-                <li><strong>Address:</strong> 123 Premium Sweets Avenue, Karachi, Pakistan</li>
+                <li><strong>Email:</strong> ilyassweets.pk@gmail.com</li>
+                <li><strong>Phone:</strong> +92 300 4600839</li>
+                <li><strong>Address:</strong> Shop# 21-22, Jama Masjid Rashidia, Begum Khursheed Rd, Saudabad, Karachi</li>
               </ul>
             </section>
           </div>
