@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useAdminHeroBanner, useUpdateHeroBanner } from "@/hooks/useHeroBanners";
 
@@ -25,7 +25,7 @@ export default function EditHeroBannerPage() {
 
   const [imagePreview, setImagePreview] = useState(banner?.imageUrl || "");
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (banner) {
       setFormData(banner);
       setImagePreview(banner.imageUrl);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useAdminCoupon, useUpdateCoupon } from "@/hooks/useCoupons";
 
@@ -26,7 +26,7 @@ export default function EditCouponPage() {
     endsAt: "",
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (coupon) {
       setFormData({
         code: coupon.code,
