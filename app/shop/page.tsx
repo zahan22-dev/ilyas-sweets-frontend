@@ -6,8 +6,13 @@ export const metadata = {
   description: "Explore our complete collection of premium sweets, savory snacks, and traditional desserts.",
 };
 
-export default async function ShopPage() {
+interface ShopPageProps {
+  searchParams: { [key: string]: string | string[] | undefined };
+}
+
+export default async function ShopPage({ searchParams }: ShopPageProps) {
   let categories: Category[] = [];
+  const searchQuery = typeof searchParams.search === 'string' ? searchParams.search : undefined;
 
   try {
     categories = await categoriesService.getAll();
@@ -35,13 +40,13 @@ export default async function ShopPage() {
             Our <span className="text-[#FFC702]">Shop</span>
           </h1>
           <p className="text-lg md:text-xl text-white/80 font-bold max-w-2xl mx-auto">
-            Discover our handcrafted collection of premium sweets and savory delights
+            {searchQuery ? `Search results for "${searchQuery}"` : "Discover our handcrafted collection of premium sweets and savory delights"}
           </p>
         </div>
       </section>
 
       <div className="container mx-auto px-4 md:px-6 lg:px-12">
-        <ShopProducts categories={categories} />
+        <ShopProducts categories={categories} searchQuery={searchQuery} />
       </div>
     </main>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import HeroBannerSlider from "@/components/HeroBannerSlider";
 import Hero from "@/sections/Hero";
 import StickyCategoryBar from "@/sections/StickyCategoryBar";
 import CategoryProductSection from "@/sections/CategoryProductSection";
@@ -20,31 +21,23 @@ export default function HomeClient() {
   const isManualScroll = useRef(false);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  // Register section ref
-  const registerSection = useCallback((slug: string, element: HTMLElement | null) => {
-    if (element) {
-      sectionRefs.current.set(slug, element);
-    }
-  }, []);
+  const registerSection = useCallback(
+    (slug: string, element: HTMLElement | null) => {
+      if (element) sectionRefs.current.set(slug, element);
+    },
+    []
+  );
 
-  // Handle category click - scroll to section
   const handleCategoryClick = useCallback((slug: string) => {
     const element = sectionRefs.current.get(slug);
     if (element) {
       isManualScroll.current = true;
       setActiveCategory(slug);
-      
-      // Calculate offset for sticky header
-      const stickyBarHeight = 64; // Approximate height of sticky bar
-      const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+      const stickyBarHeight = 64;
+      const elementPosition =
+        element.getBoundingClientRect().top + window.scrollY;
       const offsetPosition = elementPosition - stickyBarHeight;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth",
-      });
-
-      // Reset manual scroll flag after animation
+      window.scrollTo({ top: offsetPosition, behavior: "smooth" });
       if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
       scrollTimeout.current = setTimeout(() => {
         isManualScroll.current = false;
@@ -52,40 +45,29 @@ export default function HomeClient() {
     }
   }, []);
 
-  // Intersection Observer for auto-highlighting active category
   useEffect(() => {
     if (!categories?.length) return;
 
-    const observerOptions = {
-      root: null,
-      rootMargin: "-64px 0px -50% 0px", // Offset for sticky bar, trigger at top half
-      threshold: 0,
-    };
-
     const observerCallback: IntersectionObserverCallback = (entries) => {
       if (isManualScroll.current) return;
-
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           const slug = entry.target.getAttribute("data-category-slug");
-          if (slug) {
-            setActiveCategory(slug);
-          }
+          if (slug) setActiveCategory(slug);
         }
       });
     };
 
-    const observer = new IntersectionObserver(observerCallback, observerOptions);
-
-    // Observe all category sections
-    sectionRefs.current.forEach((element) => {
-      observer.observe(element);
+    const observer = new IntersectionObserver(observerCallback, {
+      root: null,
+      rootMargin: "-64px 0px -50% 0px",
+      threshold: 0,
     });
 
+    sectionRefs.current.forEach((element) => observer.observe(element));
     return () => observer.disconnect();
   }, [categories]);
 
-  // Set first category as active on mount
   useEffect(() => {
     if (categories?.length && !activeCategory) {
       setActiveCategory(categories[0].slug);
@@ -94,15 +76,16 @@ export default function HomeClient() {
 
   return (
     <>
-      <Hero />
-      
-      {/* Sticky Category Bar */}
-      <StickyCategoryBar 
+      {/*
+        HeroBannerSlider fetches its own data.
+        If there are no active banners it returns null and the static Hero below shows.
+      */}
+      <HeroBannerSlider />
+      <StickyCategoryBar
         onCategoryClick={handleCategoryClick}
         activeCategory={activeCategory}
       />
 
-      {/* Category Product Sections */}
       <div className="bg-gray-50">
         {categories?.map((category) => (
           <div
@@ -114,7 +97,7 @@ export default function HomeClient() {
           </div>
         ))}
       </div>
-      {/* Other Sections */}
+
       <DeliveryInfo />
       <DealsSection />
       <Promo />

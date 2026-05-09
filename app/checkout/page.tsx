@@ -12,8 +12,11 @@ import { useBranches } from "@/hooks/useBranches";
 
 export default function Checkout() {
   const router = useRouter();
-  const { cart, cartId, isLoading, getTotalPrice, clearCart } = useCartContext();
+  const { cart, cartId, isLoading, getTotalPrice, clearCart, couponInfo, applyCoupon, removeCoupon } = useCartContext();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [couponCode, setCouponCode] = useState('');
+  const [couponError, setCouponError] = useState('');
+  const [couponLoading, setCouponLoading] = useState(false);
   const [fulfillmentType, setFulfillmentType] = useState<FulfillmentType>('DELIVERY');
   const [selectedBranchId, setSelectedBranchId] = useState<number | null>(null);
   const { data: branches } = useBranches();
@@ -32,13 +35,33 @@ export default function Checkout() {
 
   const cartItems = cart?.items || [];
   const subtotal = getTotalPrice();
+  const discountAmount = couponInfo?.discountAmount || 0;
   const deliveryFee = fulfillmentType === 'DELIVERY' ? 150 : 0;
-  const total = subtotal > 0 ? subtotal + deliveryFee : 0;
+  const totalBeforeDiscount = subtotal > 0 ? subtotal + deliveryFee : 0;
+  const total = Math.max(totalBeforeDiscount - discountAmount, 0);
   const isDelivery = fulfillmentType === 'DELIVERY';
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) {
+      setCouponError('Please enter a coupon code');
+      return;
+    }
+
+    setCouponError('');
+    setCouponLoading(true);
+    try {
+      await applyCoupon(couponCode);
+      setCouponCode('');
+    } catch (error: any) {
+      setCouponError(error.message || 'Failed to apply coupon');
+    } finally {
+      setCouponLoading(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -86,6 +109,7 @@ export default function Checkout() {
         fulfillmentType,
         paymentMethod: formData.paymentMethod,
         branchId: !isDelivery ? selectedBranchId : undefined,
+        couponCode: couponInfo?.couponCode,
         items: cartItems.map((item: any) => ({
           productId: item.product.id,
           variantId: item.variant?.id || undefined,
@@ -432,10 +456,54 @@ export default function Checkout() {
                 })}
               </div>
               
+              {/* Coupon Section */}
+              <div className="mb-8 p-4 bg-white/10 rounded-xl border border-white/20">
+                <label className="text-sm font-bold text-gray-300 uppercase tracking-widest mb-2 block">Apply Coupon Code</label>
+                {couponInfo ? (
+                  <div className="flex items-center justify-between p-3 bg-green-500/20 border border-green-500/50 rounded-lg">
+                    <div>
+                      <p className="font-bold text-green-300 text-sm">✓ {couponInfo.couponCode}</p>
+                      <p className="text-xs text-green-200">Discount: Rs. {couponInfo.discountAmount.toFixed(0)}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={removeCoupon}
+                      className="text-red-400 hover:text-red-300 font-bold"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={couponCode}
+                      onChange={(e) => {
+                        setCouponCode(e.target.value.toUpperCase());
+                        setCouponError('');
+                      }}
+                      placeholder="Enter code"
+                      className="flex-1 bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white text-sm font-bold placeholder-gray-400 outline-none focus:border-[#FFC702]"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleApplyCoupon}
+                      disabled={couponLoading}
+                      className="px-4 py-2 bg-[#FFC702] text-[#111111] rounded-lg font-bold text-sm hover:bg-[#e6b300] disabled:opacity-50"
+                    >
+                      {couponLoading ? '...' : 'Apply'}
+                    </button>
+                  </div>
+                )}
+                {couponError && (
+                  <p className="text-red-400 text-xs mt-2">{couponError}</p>
+                )}
+              </div>
+              
               <div className="space-y-4 text-lg font-bold mb-10 border-t-2 border-white/10 pt-8">
                 <div className="flex justify-between items-center text-white/80">
                   <span>Subtotal</span>
-                  <span>Rs. {subtotal}</span>
+                  <span>Rs. {subtotal.toFixed(0)}</span>
                 </div>
                 {isDelivery && (
                   <div className="flex justify-between items-center text-white/80">
@@ -443,9 +511,15 @@ export default function Checkout() {
                     <span>Rs. {deliveryFee}</span>
                   </div>
                 )}
+                {discountAmount > 0 && (
+                  <div className="flex justify-between items-center text-green-400">
+                    <span>Discount</span>
+                    <span>-Rs. {discountAmount.toFixed(0)}</span>
+                  </div>
+                )}
                 <div className="pt-6 border-t-2 border-white/10 flex justify-between items-center">
                   <span className="text-2xl uppercase tracking-widest">Total</span>
-                  <span className="text-4xl font-black text-[#FFC702]">Rs. {total}</span>
+                  <span className="text-4xl font-black text-[#FFC702]">Rs. {total.toFixed(0)}</span>
                 </div>
               </div>
               

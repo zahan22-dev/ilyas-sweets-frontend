@@ -12,7 +12,7 @@ export default function Promo() {
       <div className="container mx-auto px-6 lg:px-12 relative z-10 text-center">
         <div className="inline-block mb-10 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
           <span className="bg-[#FFC702] text-[#111111] font-black px-8 py-3 rounded-full text-[16px] uppercase tracking-[0.2em] shadow-[0_15px_30px_rgba(0,0,0,0.2)]">
-            ?? Limited Time Offer
+            Limited Time Offer
           </span>
         </div>
         
@@ -21,7 +21,7 @@ export default function Promo() {
         </h2>
         
         <p className="text-2xl md:text-3xl text-white/90 mb-16 max-w-3xl mx-auto font-bold leading-relaxed tracking-wide transform -rotate-1">
-          Get 20% off your first box of premium sweets. Don't wait�offer ends tonight!
+          Get 20% off your first box of premium sweets. Don't wait for the offer to end tonight!
         </p>
         
         <Link href="/shop">

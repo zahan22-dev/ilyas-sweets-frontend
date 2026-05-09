@@ -94,6 +94,10 @@ export const productsService = {
     return apiClient.get('/products', { params });
   },
 
+  search: (searchTerm: string): Promise<Product[]> => {
+    return apiClient.get('/products', { params: { search: searchTerm } });
+  },
+
   getBySlug: (slug: string): Promise<Product> => {
     return apiClient.get(`/products/${slug}`);
   },

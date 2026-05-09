@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useProducts } from "@/hooks/useProducts";
+import { productsService, Product } from "@/lib/services/products";
 import ProductCard from "./ProductCard";
 
 interface Category {
@@ -12,15 +13,43 @@ interface Category {
 
 interface ShopProductsProps {
   categories: Category[];
+  searchQuery?: string;
 }
 
-export default function ShopProducts({ categories }: ShopProductsProps) {
+export default function ShopProducts({ categories, searchQuery }: ShopProductsProps) {
   const { data: products, isLoading } = useProducts();
+  const [searchResults, setSearchResults] = useState<Product[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [sortBy, setSortBy] = useState<string>("featured");
 
+  // Handle search
+  useEffect(() => {
+    if (searchQuery) {
+      const performSearch = async () => {
+        setIsSearching(true);
+        try {
+          const results = await productsService.search(searchQuery);
+          setSearchResults(results);
+        } catch (error) {
+          console.error('Search failed:', error);
+          setSearchResults([]);
+        } finally {
+          setIsSearching(false);
+        }
+      };
+      performSearch();
+    } else {
+      setSearchResults([]);
+    }
+  }, [searchQuery]);
+
+  // Use search results if searching, otherwise use all products
+  const allProducts = searchQuery ? searchResults : products;
+  const isLoadingProducts = searchQuery ? isSearching : isLoading;
+
   // Filter and sort products
-  const filteredProducts = products?.filter((product: any) => {
+  const filteredProducts = allProducts?.filter((product: any) => {
     if (!selectedCategory) return true;
     return product.category?.slug === selectedCategory;
   }) || [];
@@ -38,7 +67,7 @@ export default function ShopProducts({ categories }: ShopProductsProps) {
     }
   });
 
-  if (isLoading) {
+  if (isLoadingProducts) {
     return (
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
         {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
@@ -55,7 +84,7 @@ export default function ShopProducts({ categories }: ShopProductsProps) {
   return (
     <div className="flex flex-col lg:flex-row gap-8">
       {/* Sidebar Filters */}
-      <aside className="w-full lg:w-64 flex-shrink-0">
+      <aside className="w-full lg:w-64 shrink-0">
         <div className="bg-white p-6 rounded-2xl border border-gray-100 sticky top-24">
           <h3 className="text-lg font-black uppercase tracking-widest text-[#111111] mb-6 border-b border-gray-100 pb-4">
             Filters

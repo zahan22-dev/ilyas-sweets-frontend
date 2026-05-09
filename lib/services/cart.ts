@@ -34,6 +34,19 @@ export interface UpdateCartItemDto {
   quantity: number;
 }
 
+export interface CartCouponResponse {
+  couponCode: string;
+  discountAmount: number;
+  discountType: 'FIXED' | 'PERCENTAGE';
+  discountValue: number;
+  minPurchase?: number;
+  maxDiscount?: number;
+  subtotal: number;
+  totalAfterDiscount: number;
+  startsAt?: string;
+  endsAt?: string;
+}
+
 export const cartService = {
   create: (userId?: string): Promise<Cart> => {
     const params = userId ? { userId } : {};
@@ -50,6 +63,10 @@ export const cartService = {
 
   updateItem: (itemId: number, data: UpdateCartItemDto): Promise<CartItem> => {
     return apiClient.put(`/cart/items/${itemId}`, data);
+  },
+
+  applyCoupon: (cartId: number, code: string): Promise<CartCouponResponse> => {
+    return apiClient.post(`/cart/${cartId}/apply-coupon`, { code });
   },
 
   removeItem: (itemId: number): Promise<void> => {

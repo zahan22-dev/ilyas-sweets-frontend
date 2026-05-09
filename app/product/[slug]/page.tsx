@@ -4,6 +4,19 @@ import { Metadata } from "next";
 import { productsService, Product } from "@/lib/services/products";
 import ProductClient from "./ProductClient";
 
+function getAvailabilityMessage(slug: string): string | null {
+  // Define availability rules based on product slugs
+  const availabilityRules: Record<string, string> = {
+    'aloo-samosa': 'Available only 12 pm - 6 pm',
+    'chicken-roll': 'Available only 12 pm - 6 pm',
+    'beef-samosa': 'Available only 12 pm - 6 pm',
+    'vegetable-roll': 'Available only 12 pm - 6 pm',
+    'halwa-puri': 'Available only Saturday and Sunday'
+  };
+
+  return availabilityRules[slug] || null;
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   try {
@@ -89,6 +102,24 @@ export default async function ProductDetail({ params }: { params: Promise<{ slug
           <span>/</span>
           <span className="text-[#111111] truncate max-w-[200px]">{product.name}</span>
         </div>
+
+        {/* Availability Strip */}
+        {getAvailabilityMessage(slug) && (
+          <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 px-6 py-4 mb-8 rounded-r-lg">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm font-medium">
+                  {getAvailabilityMessage(slug)}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Product Section */}
         <ProductClient product={product} />

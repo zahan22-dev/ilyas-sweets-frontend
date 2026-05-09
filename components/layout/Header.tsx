@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useCartContext } from "@/providers/CartProvider";
+import { productsService, Product } from "@/lib/services/products";
 
 // Chevron Down Icon
 function ChevronDownIcon({ className }: { className?: string }) {
@@ -29,10 +30,56 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLegalOpen, setIsLegalOpen] = useState(false);
   const [isMobileLegalOpen, setIsMobileLegalOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<Product[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showFloatingCart, setShowFloatingCart] = useState(false);
   const { getTotalItems } = useCartContext();
 
+  // Search functionality
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      return;
+    }
+
+    const searchProducts = async () => {
+      setIsSearching(true);
+      try {
+        const results = await productsService.search(searchQuery.trim());
+        setSearchResults(results);
+      } catch (error) {
+        console.error('Search failed:', error);
+        setSearchResults([]);
+      } finally {
+        setIsSearching(false);
+      }
+    };
+
+    const debounceTimer = setTimeout(searchProducts, 300);
+    return () => clearTimeout(debounceTimer);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 24) {
+        setShowFloatingCart(true);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <header className="relative bg-white border-b border-gray-100">
+    <>
+      {/* Delivery Availability Stripe */}
+      <div className="bg-red-600 text-white text-center py-2 text-sm font-medium">
+        Please order between 10 am to 10 pm
+      </div>
+
+      <header className="relative bg-white border-b border-gray-100">
       <div className="py-4">
         <div className="container mx-auto px-4 md:px-6 lg:px-12 flex items-center justify-between">
           {/* Mobile Menu Button */}
@@ -107,6 +154,28 @@ export default function Header() {
 
           {/* Actions */}
           <div className="flex items-center gap-6 md:gap-8">
+            {/* Search Icon */}
+            <button
+              onClick={() => setIsSearchOpen(true)}
+              className="text-[#111111] hover:text-[#FFC702] transition-all duration-300 group cursor-pointer"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="group-hover:scale-110 transition-transform duration-300 md:w-6 md:h-6"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+              </svg>
+            </button>
+
             <Link href="/cart" className="relative text-[#111111] hover:text-[#FFC702] transition-all duration-300 group cursor-pointer block">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -180,5 +249,166 @@ export default function Header() {
         </div>
       )}
     </header>
+
+    {/* Search Modal */}
+    {isSearchOpen && (
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-start justify-center pt-20 md:pt-32">
+        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl mx-4 md:mx-8 relative">
+          {/* Close Button */}
+          <button
+            onClick={() => {
+              setIsSearchOpen(false);
+              setSearchQuery("");
+            }}
+            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M18 6L6 18"/>
+              <path d="M6 6l12 12"/>
+            </svg>
+          </button>
+
+          {/* Search Input */}
+          <div className="p-8">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search for products..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full text-xl md:text-2xl font-medium placeholder-gray-400 border-0 border-b-2 border-gray-200 focus:border-[#FFC702] focus:ring-0 pb-4 pr-12 outline-none"
+                autoFocus
+              />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="absolute right-0 top-4 text-gray-400"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+              </svg>
+            </div>
+
+            {/* Search Results */}
+            {searchQuery && (
+              <div className="mt-8 max-h-96 overflow-y-auto">
+                {isSearching ? (
+                  <div className="flex items-center justify-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#FFC702]"></div>
+                    <span className="ml-3 text-gray-500">Searching...</span>
+                  </div>
+                ) : searchResults.length > 0 ? (
+                  <div className="space-y-4">
+                    <p className="text-sm text-gray-500 font-medium">
+                      Found {searchResults.length} product{searchResults.length !== 1 ? 's' : ''} for "{searchQuery}"
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {searchResults.slice(0, 6).map((product) => (
+                        <Link
+                          key={product.id}
+                          href={`/product/${product.slug}`}
+                          onClick={() => {
+                            setIsSearchOpen(false);
+                            setSearchQuery("");
+                          }}
+                          className="flex items-center gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors group"
+                        >
+                          <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-100 shrink-0">
+                            {product.images && product.images.length > 0 ? (
+                              <Image
+                                src={product.images[0].imageUrl}
+                                alt={product.name}
+                                width={64}
+                                height={64}
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                              />
+                            ) : (
+                              <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                                <span className="text-gray-400 text-xs">No image</span>
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold text-gray-900 truncate group-hover:text-[#FFC702] transition-colors">
+                              {product.name}
+                            </h3>
+                            <p className="text-sm text-gray-500 truncate">
+                              {product.category?.name}
+                            </p>
+                            <p className="text-sm font-medium text-[#FFC702]">
+                              Rs. {product.basePrice || (product.variants && product.variants.length > 0 ? Math.min(...product.variants.map(v => v.price)) : 'N/A')}
+                            </p>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                    {searchResults.length > 6 && (
+                      <div className="text-center pt-4">
+                        <Link
+                          href={`/shop?search=${encodeURIComponent(searchQuery)}`}
+                          onClick={() => {
+                            setIsSearchOpen(false);
+                            setSearchQuery("");
+                          }}
+                          className="inline-flex items-center gap-2 text-[#FFC702] hover:text-[#111111] font-semibold transition-colors"
+                        >
+                          View all {searchResults.length} results
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M5 12h14"/>
+                            <path d="m12 5 7 7-7 7"/>
+                          </svg>
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <p className="text-gray-500">No products found for "{searchQuery}"</p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* Floating Cart Icon */}
+    <div className={`fixed bottom-23 md:bottom-30 right-6 z-50 transition-all duration-300 ${showFloatingCart ? "opacity-100 visible" : "opacity-0 invisible"}`}>
+      <Link
+        href="/cart"
+        className="bg-[#111111] text-white p-4 rounded-full shadow-lg hover:bg-gray-800 transition-colors duration-200 flex items-center justify-center"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <circle cx="8" cy="21" r="1"/>
+          <circle cx="19" cy="21" r="1"/>
+          <path d="m2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+        </svg>
+        {getTotalItems() > 0 && (
+          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center font-bold">
+            {getTotalItems()}
+          </span>
+        )}
+      </Link>
+    </div>
+
+    </>
   );
 }

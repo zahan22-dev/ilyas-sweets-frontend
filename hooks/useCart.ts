@@ -74,3 +74,9 @@ export function useClearCart() {
     },
   });
 }
+
+export function useApplyCartCoupon() {
+  return useMutation({
+    mutationFn: ({ cartId, code }: { cartId: number; code: string }) => cartService.applyCoupon(cartId, code),
+  });
+}
