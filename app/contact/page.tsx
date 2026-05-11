@@ -18,7 +18,7 @@ export default function ContactPage() {
         <div className="flex flex-col lg:flex-row gap-16 lg:gap-24 relative z-20">
           {/* Contact Details & Map */}
           <div className="w-full lg:w-[45%] space-y-12">
-            <div className="bg-[#111111] text-white p-12 rounded-[3rem] shadow-[0_20px_40px_rgba(0,0,0,0.2)] relative overflow-hidden">
+            <div className="bg-[#111111] text-white py-12 pl-3 rounded-[3rem] shadow-[0_20px_40px_rgba(0,0,0,0.2)] relative overflow-hidden">
               <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-[#FFC702] rounded-full blur-[80px] opacity-20 pointer-events-none"></div>
 
               <h3 className="text-3xl font-black font-heading uppercase tracking-tighter mb-10">Get in Touch</h3>
@@ -39,7 +39,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h4 className="text-white/50 text-sm uppercase tracking-widest mb-1">Email Us</h4>
-                    <span>ilyassweets.pk@gmail.com</span>
+                    <span className="leading-relaxed">ilyassweets.pk@gmail.com</span>
                   </div>
                 </li>
                 <li className="flex items-center gap-6 group">

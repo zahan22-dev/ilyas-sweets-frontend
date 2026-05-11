@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import QueryProvider from "@/providers/QueryProvider";
 import { CartProvider } from "@/providers/CartProvider";
@@ -19,7 +20,8 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: "Ilyas Sweets | Premium Authentic Sweets & Snacks",
-  description: "The finest premium sweets and savory snacks delivered fresh to your door. Experience authentic taste and quality.",
+  description:
+    "The finest premium sweets and savory snacks delivered fresh to your door. Experience authentic taste and quality.",
 };
 
 export default function RootLayout({
@@ -33,16 +35,25 @@ export default function RootLayout({
       className={`${inter.variable} ${poppins.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        
+        {/* Microsoft Clarity */}
+        <Script id="ms-clarity" strategy="afterInteractive">
+          {`
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "wonyjb46in");
+          `}
+        </Script>
+
         <QueryProvider>
           <CartProvider>
             <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
-            <PublicLayout>
-              {children}
-            </PublicLayout>
+            <PublicLayout>{children}</PublicLayout>
           </CartProvider>
         </QueryProvider>
       </body>
     </html>
   );
 }
-

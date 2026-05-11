@@ -57,36 +57,72 @@ export default async function CategoryDetail({ params }: { params: Promise<{ slu
       )}
     <main className="bg-[#FEFFFF] min-h-screen">
       {/* Category Header */}
-      <section className="bg-[#111111] py-20 px-6 lg:px-12 rounded-b-[4rem] relative overflow-hidden mb-20 z-10">
-        <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
-           <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1"/>
-                  </pattern>
-              </defs>
-              <rect width="100%" height="100%" fill="url(#grid)" />
-          </svg>
-        </div>
-        {category.image && (
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[500px] z-0 opacity-40">
-             <Image src={category.image} alt={category.name} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover blur-[80px]" />
-          </div>
-        )}
-        <div className="container mx-auto relative z-10 text-center">
-          <h1 className="text-6xl md:text-8xl lg:text-[7.5rem] font-black font-heading text-white tracking-tighter leading-[0.9] uppercase mb-6">
-            {category.name}
-          </h1>
-          <p className="text-xl md:text-2xl text-[#FFC702] font-bold max-w-2xl mx-auto uppercase tracking-widest">
-            {category.products?.length || 0} Premium {category.products?.length === 1 ? 'Item' : 'Items'}
+{/* Category Header */}
+<section className="relative overflow-hidden mb-20 rounded-b-[4rem]">
+  
+  {/* Banner Wrapper */}
+  <div className="relative w-full aspect-[1000/320] md:aspect-[1920/400]">
+    
+    {/* Background Image */}
+    {category.image && (
+      <Image
+        src={category.image}
+        alt={category.name}
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover object-center"
+      />
+    )}
+
+    {/* Dark Overlay */}
+    <div className="absolute inset-0 bg-black/60 z-[1]" />
+
+    {/* Grid Pattern */}
+    <div className="absolute inset-0 opacity-[0.04] pointer-events-none z-[3]">
+      <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern
+            id="grid"
+            width="40"
+            height="40"
+            patternUnits="userSpaceOnUse"
+          >
+            <path
+              d="M 40 0 L 0 0 0 40"
+              fill="none"
+              stroke="white"
+              strokeWidth="1"
+            />
+          </pattern>
+        </defs>
+
+        <rect width="100%" height="100%" fill="url(#grid)" />
+      </svg>
+    </div>
+
+    {/* Content */}
+    <div className="absolute inset-0 z-10 flex items-center">
+      <div className="container mx-auto px-6 lg:px-12 text-center">
+        
+        <h1 className="text-5xl md:text-7xl lg:text-[7.5rem] font-black font-heading text-white tracking-tighter leading-[0.9] uppercase mb-5 drop-shadow-[0_8px_25px_rgba(0,0,0,0.35)]">
+          {category.name}
+        </h1>
+
+        <p className="text-sm md:text-xl text-[#FFC702] font-black max-w-2xl mx-auto uppercase tracking-[0.3em]">
+          {category.products?.length || 0} Premium{" "}
+          {category.products?.length === 1 ? "Item" : "Items"}
+        </p>
+
+        {category.description && (
+          <p className="text-sm md:text-lg text-white/85 mt-5 max-w-3xl mx-auto leading-relaxed">
+            {category.description}
           </p>
-          {category.description && (
-            <p className="text-lg text-white/80 mt-6 max-w-3xl mx-auto">
-              {category.description}
-            </p>
-          )}
-        </div>
-      </section>
+        )}
+      </div>
+    </div>
+  </div>
+</section>
 
       <div className="container mx-auto px-6 lg:px-12">
         {category.products && category.products.length > 0 ? (

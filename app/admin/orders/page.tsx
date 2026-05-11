@@ -192,61 +192,6 @@ function OrderDetailsModal({
                   </div>
                 </div>
               </div>
-
-              {/* Fulfillment Type */}
-              <div className={`rounded-xl p-5 border ${
-                order.fulfillmentType === 'DELIVERY' 
-                  ? 'bg-orange-50 border-orange-100' 
-                  : 'bg-teal-50 border-teal-100'
-              }`}>
-                <h3 className={`text-sm font-bold uppercase tracking-wider mb-2 flex items-center gap-2 ${
-                  order.fulfillmentType === 'DELIVERY' ? 'text-orange-600' : 'text-teal-600'
-                }`}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
-                    <circle cx="12" cy="10" r="3"/>
-                  </svg>
-                  Fulfillment Type
-                </h3>
-                <p className="font-medium">{order.fulfillmentType === 'DELIVERY' ? '🚚 Delivery' : '🏪 Store Pickup'}</p>
-              </div>
-
-              {/* Payment Method & Status */}
-              <div className={`rounded-xl p-5 border ${
-                order.paymentMethod === 'ONLINE_PAYMENT' 
-                  ? 'bg-blue-50 border-blue-100' 
-                  : 'bg-green-50 border-green-100'
-              }`}>
-                <h3 className={`text-sm font-bold uppercase tracking-wider mb-3 flex items-center gap-2 ${
-                  order.paymentMethod === 'ONLINE_PAYMENT' ? 'text-blue-600' : 'text-green-600'
-                }`}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect width="20" height="14" x="2" y="5" rx="2"/>
-                    <line x1="2" x2="22" y1="10" y2="10"/>
-                  </svg>
-                  Payment
-                </h3>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-500">Method</span>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${paymentMethodColors[order.paymentMethod || 'COD']}`}>
-                      {order.paymentMethod === 'ONLINE_PAYMENT' ? 'Online Payment' : 'Cash on Delivery'}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-500">Status</span>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${paymentStatusColors[order.paymentStatus || 'PENDING']}`}>
-                      {(order.paymentStatus || 'PENDING').replace('_', ' ')}
-                    </span>
-                  </div>
-                  {order.paymentMethod === 'ONLINE_PAYMENT' && order.paymentStatus === 'PENDING' && (
-                    <p className="text-xs text-blue-600 mt-2 pt-2 border-t border-blue-200">
-                      Awaiting screenshot verification
-                    </p>
-                  )}
-                </div>
-              </div>
-
               {/* Address or Pickup */}
               {isDelivery ? (
                 <div className="bg-orange-50 rounded-xl p-5 border border-orange-100">
@@ -311,6 +256,61 @@ function OrderDetailsModal({
                   <p className="text-gray-700 italic">&ldquo;{order.notes}&rdquo;</p>
                 </div>
               )}
+              {/* Fulfillment Type */}
+              <div className={`rounded-xl p-5 border ${
+                order.fulfillmentType === 'DELIVERY' 
+                  ? 'bg-orange-50 border-orange-100' 
+                  : 'bg-teal-50 border-teal-100'
+              }`}>
+                <h3 className={`text-sm font-bold uppercase tracking-wider mb-2 flex items-center gap-2 ${
+                  order.fulfillmentType === 'DELIVERY' ? 'text-orange-600' : 'text-teal-600'
+                }`}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+                    <circle cx="12" cy="10" r="3"/>
+                  </svg>
+                  Fulfillment Type
+                </h3>
+                <p className="font-medium">{order.fulfillmentType === 'DELIVERY' ? '🚚 Delivery' : '🏪 Store Pickup'}</p>
+              </div>
+
+              {/* Payment Method & Status */}
+              <div className={`rounded-xl p-5 border ${
+                order.paymentMethod === 'ONLINE_PAYMENT' 
+                  ? 'bg-blue-50 border-blue-100' 
+                  : 'bg-green-50 border-green-100'
+              }`}>
+                <h3 className={`text-sm font-bold uppercase tracking-wider mb-3 flex items-center gap-2 ${
+                  order.paymentMethod === 'ONLINE_PAYMENT' ? 'text-blue-600' : 'text-green-600'
+                }`}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect width="20" height="14" x="2" y="5" rx="2"/>
+                    <line x1="2" x2="22" y1="10" y2="10"/>
+                  </svg>
+                  Payment
+                </h3>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-500">Method</span>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${paymentMethodColors[order.paymentMethod || 'COD']}`}>
+                      {order.paymentMethod === 'ONLINE_PAYMENT' ? 'Online Payment' : 'Cash on Delivery'}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-500">Status</span>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${paymentStatusColors[order.paymentStatus || 'PENDING']}`}>
+                      {(order.paymentStatus || 'PENDING').replace('_', ' ')}
+                    </span>
+                  </div>
+                  {order.paymentMethod === 'ONLINE_PAYMENT' && order.paymentStatus === 'PENDING' && (
+                    <p className="text-xs text-blue-600 mt-2 pt-2 border-t border-blue-200">
+                      Awaiting screenshot verification
+                    </p>
+                  )}
+                </div>
+              </div>
+
+
             </div>
 
             {/* Right Column - Order Items */}

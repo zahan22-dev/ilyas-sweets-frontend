@@ -40,7 +40,7 @@ const CategoryProductSection = forwardRef<HTMLElement, CategoryProductSectionPro
             </div>
             <Link
               href={`/category/${category.slug}`}
-              className="inline-flex items-center gap-2 text-[#FFC702] hover:text-[#111111] font-black text-sm uppercase tracking-widest transition-colors group"
+              className="w-fit px-8 py-2.5 md:py-3 rounded-full font-black uppercase tracking-[0.08em] transition-all duration-300 flex items-center justify-center gap-2 bg-[#FFC702] text-[#111111] hover:bg-[#e6b300] hover:shadow-[0_10px_20px_rgba(255,199,2,0.3)] hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 text-[11px] md:text-[13px]"
             >
               View All
               <svg

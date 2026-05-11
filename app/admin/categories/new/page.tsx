@@ -17,6 +17,7 @@ export default function NewCategoryPage() {
     name: "",
     image: "",
     description: "",
+    sortOrder: 0,
     metaTitle: "",
     metaDescription: "",
     schema: "",
@@ -145,6 +146,23 @@ export default function NewCategoryPage() {
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent min-h-[100px]"
             placeholder="Category description..."
           />
+        </div>
+
+        {/* Sort Order */}
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Sort Order
+          </label>
+          <input
+            type="number"
+            min="0"
+            value={formData.sortOrder}
+            onChange={(e) => setFormData({ ...formData, sortOrder: parseInt(e.target.value) || 0 })}
+            className="w-32 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+          />
+          <p className="text-xs text-gray-500 mt-1">
+            Lower numbers appear first on homepage and shop (0 = top)
+          </p>
         </div>
 
         <hr className="my-8" />

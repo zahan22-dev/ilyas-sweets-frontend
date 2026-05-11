@@ -7,6 +7,7 @@ export interface Category {
   slug: string;
   image?: string;
   description?: string;
+  sortOrder?: number;
   metaTitle?: string;
   metaDescription?: string;
   schema?: any;
@@ -26,6 +27,7 @@ export interface CreateCategoryDto {
   slug?: string;
   image?: string;
   description?: string;
+  sortOrder?: number;
   metaTitle?: string;
   metaDescription?: string;
   schema?: any;
@@ -35,6 +37,7 @@ export interface UpdateCategoryDto {
   name?: string;
   image?: string;
   description?: string;
+  sortOrder?: number;
   metaTitle?: string;
   metaDescription?: string;
   schema?: any;

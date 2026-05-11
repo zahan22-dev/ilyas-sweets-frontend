@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function About() {
   return (
-    <section className="py-48 bg-[#FEFFFF] overflow-hidden relative">
+    <section className="pb-30 bg-[#FEFFFF] overflow-hidden relative">
       {/* Background Decorative Pattern */}
       <div className="absolute inset-0 opacity-[0.02] pointer-events-none">
          <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
@@ -22,7 +22,7 @@ export default function About() {
           <div className="w-full lg:w-1/2 relative">
             <div className="relative z-10 w-[80%] h-[400px] md:h-[550px] rounded-[3rem] overflow-hidden shadow-[0_40px_80px_-20px_rgba(0,0,0,0.25)] ml-[10%]">
               <Image 
-                src="https://images.unsplash.com/photo-1596803244618-8dbee441d70b?q=80&w=1000&auto=format&fit=crop" 
+                src="/MOTi choor lado.png" 
                 alt="Making Mithai" 
                 fill 
                 className="object-cover hover:scale-110 transition-transform duration-1000"
@@ -31,7 +31,7 @@ export default function About() {
             
             <div className="absolute top-1/2 -translate-y-1/2 -left-4 md:-left-12 w-[60%] h-[60%] rounded-[3rem] overflow-hidden shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] border-[12px] border-[#FEFFFF] z-20 group">
               <Image 
-                src="https://images.unsplash.com/photo-1601050690597-df0568f70950?q=80&w=800&auto=format&fit=crop" 
+                src="/Mix Methai.png" 
                 alt="Fresh Samosas" 
                 fill 
                 className="object-cover group-hover:scale-110 transition-transform duration-1000"
@@ -66,26 +66,6 @@ export default function About() {
               <p className="relative z-10">
                 We don't use shortcuts. Our savory snacks are hand-folded daily, our traditional sweets are made with pure premium ingredients, and our recipes have been passed down through generations.
               </p>
-            </div>
-            
-            <div className="mt-16 flex flex-col sm:flex-row items-center sm:items-start gap-8 bg-white p-8 rounded-[2rem] shadow-[0_20px_50px_-15px_rgba(0,0,0,0.1)] border-2 border-gray-50 w-fit">
-              <div className="flex -space-x-6">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="w-16 h-16 rounded-full border-4 border-white overflow-hidden relative shadow-lg">
-                    <Image src={`https://images.unsplash.com/photo-1599487405400-60b616900f68?q=80&w=100&auto=format&fit=crop`} alt="Customer" fill className="object-cover" />
-                  </div>
-                ))}
-              </div>
-              <div className="text-center sm:text-left">
-                <p className="font-black text-[#111111] text-[18px] tracking-widest uppercase mb-2">Loved by 10k+ Families</p>
-                <div className="flex justify-center sm:justify-start text-[#FFC702] gap-1">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                </div>
-              </div>
             </div>
           </div>
           
