@@ -15,6 +15,20 @@ export default function ProductClient({ product }: { product: any }) {
   // Custom Input State
   const [useCustom, setUseCustom] = useState(product.variants?.length === 0);
   const [customValue, setCustomValue] = useState<number>(1);
+
+  const parsePrice = (price: any): number => {
+    if (price == null) return 0;
+    if (typeof price === 'number') return price;
+    if (typeof price === 'string') return Number(price) || 0;
+    if (typeof price === 'object' && '$numberDecimal' in price) {
+      return Number(price.$numberDecimal) || 0;
+    }
+    return 0;
+  };
+
+  const basePrice = parsePrice(product.basePrice);
+  const defaultVariant = product.variants?.length > 0 ? product.variants[0] : null;
+  const effectiveVariant = selectedVariant || defaultVariant;
   const { addToCart, isLoading } = useCartContext();
 
   const handleCustomChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,10 +44,20 @@ export default function ProductClient({ product }: { product: any }) {
   };
 
   const calculatePrice = (): number => {
-    if (useCustom && product.allowCustomInput && product.basePrice) {
-      return Number(product.basePrice) * Number(customValue);
+    if (useCustom && product.allowCustomInput && basePrice > 0) {
+      return basePrice * Number(customValue || 0);
     }
-    return selectedVariant ? Number(selectedVariant.price) : 0;
+
+    const variantPrice = effectiveVariant ? parsePrice(effectiveVariant.price) : 0;
+    if (variantPrice > 0) {
+      return variantPrice;
+    }
+
+    if (basePrice > 0) {
+      return basePrice;
+    }
+
+    return 0;
   };
 
   const currentPrice = calculatePrice();
@@ -61,9 +85,9 @@ export default function ProductClient({ product }: { product: any }) {
   return (
     <div className="flex flex-col lg:flex-row gap-16 lg:gap-24 mb-32">
       {/* Gallery (Left) */}
-      <div className="w-full lg:w-1/2 flex flex-col md:flex-row gap-6">
+      <div className="w-full lg:w-1/2 flex flex-col md:flex-row gap-6 min-w-0">
         {/* Thumbnails */}
-        <div className="flex md:flex-col gap-4 order-2 md:order-1">
+        <div className="flex md:flex-col gap-4 order-2 md:order-1 min-w-0">
           {product.images?.map((image: any, idx: number) => (
             <div
               key={idx}
@@ -84,7 +108,7 @@ export default function ProductClient({ product }: { product: any }) {
         </div>
 
         {/* Main Image */}
-        <div className="relative w-full h-[400px] md:h-[600px] rounded-[3rem] overflow-hidden order-1 md:order-2 shadow-[0_30px_60px_rgba(0,0,0,0.15)] group bg-gray-100 border-[8px] border-white">
+        <div className="relative w-full h-100 md:h-150 rounded-[3rem] overflow-hidden order-1 md:order-2 shadow-[0_30px_60px_rgba(0,0,0,0.15)] group bg-gray-100 border-8 border-white">
           {product.category && (
             <div className="absolute top-6 left-6 bg-[#FFC702] text-[#111111] px-5 py-2 rounded-full text-[14px] font-black z-20 shadow-md tracking-widest uppercase">
               {product.category.name}
@@ -108,7 +132,7 @@ export default function ProductClient({ product }: { product: any }) {
       </div>
 
       {/* Details (Right) */}
-      <div className="w-full lg:w-1/2 flex flex-col justify-center">
+      <div className="w-full lg:w-1/2 flex flex-col justify-center min-w-0">
         <div className="space-y-8">
           {/* Title & Description */}
           <div>
@@ -169,7 +193,7 @@ export default function ProductClient({ product }: { product: any }) {
                 Custom {product.productType === 'WEIGHT' ? 'Weight' : 'Quantity'}
               </h3>
               <div 
-                className={`flex gap-4 items-center p-4 border-2 rounded-2xl transition-all ${
+                className={`flex flex-col sm:flex-row gap-3 items-center p-4 border-2 rounded-2xl transition-all ${
                   useCustom ? "border-[#FFC702] bg-[#FFC702]/5" : "border-gray-200"
                 }`}
                 onClick={() => setUseCustom(true)}
@@ -179,7 +203,7 @@ export default function ProductClient({ product }: { product: any }) {
                   value={customValue}
                   onChange={handleCustomChange}
                   placeholder={`Enter ${product.productType === 'WEIGHT' ? 'weight' : 'quantity'}`}
-                  className="flex-1 bg-transparent border-none focus:outline-none text-xl font-black text-[#111111]"
+                  className="flex-1 min-w-0 w-full bg-transparent border-none focus:outline-none text-xl font-black text-[#111111]"
                   min="0.1"
                   step={product.productType === 'WEIGHT' ? '0.1' : '1'}
                 />
@@ -196,8 +220,8 @@ export default function ProductClient({ product }: { product: any }) {
           {/* Quantity Selector */}
           <div>
             <h3 className="text-xl font-black uppercase tracking-widest text-[#111111] mb-4">Quantity</h3>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center bg-gray-100 rounded-full p-1.5 border-2 border-gray-200">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              <div className="flex items-center bg-gray-100 rounded-full p-1.5 border-2 border-gray-200 w-full sm:w-auto min-w-0">
                 <button 
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-[#111111] font-black hover:text-[#FFC702] transition-colors shadow-sm text-xl"
@@ -223,7 +247,7 @@ export default function ProductClient({ product }: { product: any }) {
               className={`w-full py-6 rounded-full font-black uppercase tracking-[0.15em] transition-all duration-500 flex items-center justify-center gap-3 relative overflow-hidden group/btn ${
                 product.stock === 0 
                   ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  : 'bg-gradient-to-r from-[#FFC702] to-[#FF8A00] text-[#111111] shadow-[0_15px_30px_rgba(255,199,2,0.3)] hover:shadow-[0_20px_40px_rgba(255,199,2,0.5)] hover:scale-[1.02]'
+                  : 'bg-linear-to-r from-[#FFC702] to-[#FF8A00] text-[#111111] shadow-[0_15px_30px_rgba(255,199,2,0.3)] hover:shadow-[0_20px_40px_rgba(255,199,2,0.5)] hover:scale-[1.02]'
               }`}
             >
               <span className="absolute inset-0 bg-white/30 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-500 ease-out"></span>

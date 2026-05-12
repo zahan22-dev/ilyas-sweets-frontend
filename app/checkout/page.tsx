@@ -83,6 +83,8 @@ export default function Checkout() {
   const [deliveryResult, setDeliveryResult] = useState<DeliveryCalculationResult | null>(null);
   const [geoLoading, setGeoLoading] = useState(false);
   const [userCoords, setUserCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [locationSource, setLocationSource] = useState<'gps' | 'manual' | undefined>(undefined);
+  const [locationError, setLocationError] = useState<string | null>(null);
   const [showMap, setShowMap] = useState(false);
 
   // ── Derived Values ────────────────────────────────────────────────────────
@@ -104,6 +106,10 @@ export default function Checkout() {
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === 'address' || name === 'area') {
+      setLocationSource((prevSource) => (prevSource === 'gps' ? 'gps' : 'manual'));
+    }
   };
 
   const handleApplyCoupon = async () => {
@@ -128,19 +134,25 @@ export default function Checkout() {
    */
   const handleGetLocation = useCallback(async () => {
     if (!navigator.geolocation) {
+      setLocationError('Geolocation is not supported by your browser.');
       toast.error('Geolocation is not supported by your browser');
       return;
     }
+
     setGeoLoading(true);
+    setLocationError(null);
+
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude: lat, longitude: lng } = position.coords;
         setUserCoords({ lat, lng });
+        setLocationSource('gps');
+
         try {
           const result = await calculateDelivery.mutateAsync({ lat, lng });
           setDeliveryResult(result);
           setShowMap(true);
-          
+
           if (result.branchId && fulfillmentType === 'PICKUP') {
             setSelectedBranchId(result.branchId);
           }
@@ -148,17 +160,24 @@ export default function Checkout() {
           try {
             const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`);
             const geoData = await geoRes.json();
-            if (geoData && geoData.address) {
-              const area = geoData.address.suburb || geoData.address.city_district || geoData.address.town || geoData.address.city || '';
-              
-              setFormData(prev => ({
+
+            if (geoData) {
+              const addressString = geoData.display_name || 'Current Location';
+              const area =
+                geoData.address?.suburb ||
+                geoData.address?.city_district ||
+                geoData.address?.town ||
+                geoData.address?.city ||
+                '';
+
+              setFormData((prev) => ({
                 ...prev,
-                address: prev.address.trim() ? prev.address : "Your Current Location",
-                area: area || prev.area
+                address: prev.address.trim() ? prev.address : addressString,
+                area: prev.area.trim() ? prev.area : area,
               }));
             }
           } catch (e) {
-            console.warn("Reverse geocoding failed", e);
+            console.warn('Reverse geocoding failed', e);
           }
 
           toast.success(
@@ -166,6 +185,7 @@ export default function Checkout() {
             { duration: 5000 },
           );
         } catch (err: any) {
+          setLocationError('Unable to calculate delivery. Please enter your address manually.');
           toast.error(err.message || 'Could not calculate delivery fee');
         } finally {
           setGeoLoading(false);
@@ -173,35 +193,52 @@ export default function Checkout() {
       },
       (error) => {
         setGeoLoading(false);
+        let message = 'Could not get location';
+
         const messages: Record<number, string> = {
           1: 'Location permission denied. Please enter your address manually.',
           2: 'Location unavailable. Please enter your address manually.',
           3: 'Location request timed out. Please try again.',
         };
-        toast.error(messages[error.code] || 'Could not get location');
+
+        message = messages[error.code] || message;
+        setLocationError(message);
+        toast.error(message);
       },
-      { timeout: 10000, maximumAge: 300000 },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 300000 },
     );
   }, [calculateDelivery, fulfillmentType]);
 
   const handleMapPinChange = useCallback(async (lat: number, lng: number) => {
     setUserCoords({ lat, lng });
+    setLocationSource('gps');
+    setLocationError(null);
+
     try {
       const result = await calculateDelivery.mutateAsync({ lat, lng });
       setDeliveryResult(result);
-      
+
       const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`);
       const geoData = await geoRes.json();
-      if (geoData && geoData.address) {
-        const area = geoData.address.suburb || geoData.address.city_district || geoData.address.town || geoData.address.city || '';
-        setFormData(prev => ({
+      if (geoData) {
+        const area =
+          geoData.address?.suburb ||
+          geoData.address?.city_district ||
+          geoData.address?.town ||
+          geoData.address?.city ||
+          '';
+
+        setFormData((prev) => ({
           ...prev,
-          address: prev.address.trim() && prev.address !== "Your Current Location" ? prev.address : "Pinned Location",
-          area: area || prev.area
+          address:
+            prev.address.trim() && prev.address !== 'Your Current Location'
+              ? prev.address
+              : geoData.display_name || 'Pinned Location',
+          area: prev.area.trim() ? prev.area : area,
         }));
       }
     } catch (e) {
-      // Slient fail on drag
+      // Silent fail on drag
     }
   }, [calculateDelivery]);
 
@@ -233,11 +270,26 @@ export default function Checkout() {
           .join(' | ')
       : formData.notes || undefined;
 
+    const addressText = isDelivery
+      ? [formData.address.trim(), formData.area.trim()].filter(Boolean).join(', ')
+      : undefined;
+
+    const hasCoordinates =
+      userCoords?.lat != null && userCoords?.lng != null;
+
+    const payloadLocationSource = hasCoordinates
+      ? 'gps'
+      : isDelivery
+      ? 'manual'
+      : undefined;
+
     return {
       customerName: `${formData.firstName} ${formData.lastName}`.trim(),
       phone: formData.phone.trim(),
-      address: isDelivery
-        ? `${formData.address.trim()}, ${formData.area.trim()}, Karachi`
+      address: addressText,
+      deliveryAddress: addressText,
+      googleMapsUrl: hasCoordinates
+        ? `https://maps.google.com/?q=${userCoords!.lat},${userCoords!.lng}`
         : undefined,
       notes: notesWithEmail,
       cartId: cartId ?? undefined,
@@ -246,8 +298,9 @@ export default function Checkout() {
       branchId: !isDelivery ? selectedBranchId : undefined,
       couponCode: couponInfo?.couponCode ?? undefined,
       deliveryFee: isDelivery ? deliveryFee : undefined,
-      userLat: userCoords?.lat ?? undefined,
-      userLng: userCoords?.lng ?? undefined,
+      userLat: hasCoordinates ? userCoords!.lat : undefined,
+      userLng: hasCoordinates ? userCoords!.lng : undefined,
+      locationSource: payloadLocationSource,
       items: cartItems.map((item: any) => ({
         productId: item.product.id,
         variantId: item.variant?.id ?? undefined,
@@ -531,7 +584,24 @@ export default function Checkout() {
                       )}
                     </button>
                   </div>
+                  {locationError && (
+                    <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                      {locationError}
+                    </div>
+                  )}
                   <div className="space-y-3">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                      <p className="text-sm text-gray-600">
+                        {locationSource === 'gps'
+                          ? 'GPS coordinates captured. You can adjust the pin if needed.'
+                          : 'You can use your current location or enter address manually.'}
+                      </p>
+                      {locationSource && (
+                        <span className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
+                          {locationSource === 'gps' ? 'GPS Location' : 'Manual Address'}
+                        </span>
+                      )}
+                    </div>
                     <input
                       required
                       type="text"

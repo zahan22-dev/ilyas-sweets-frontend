@@ -22,6 +22,26 @@ export const metadata: Metadata = {
   title: "Ilyas Sweets | Premium Authentic Sweets & Snacks",
   description:
     "The finest premium sweets and savory snacks delivered fresh to your door. Experience authentic taste and quality.",
+  themeColor: "#ffffff",
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon-16x16.png", type: "image/png", sizes: "16x16" },
+      { url: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
+      { url: "/android-chrome-192x192.png", type: "image/png", sizes: "192x192" },
+      { url: "/android-chrome-512x512.png", type: "image/png", sizes: "512x512" },
+    ],
+    apple: "/apple-touch-icon.png",
+    other: [
+      { rel: "manifest", url: "/site.webmanifest" },
+      { rel: "shortcut icon", url: "/favicon.ico" },
+      { rel: "icon", url: "/favicon-16x16.png", type: "image/png", sizes: "16x16" },
+      { rel: "icon", url: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
+      { rel: "apple-touch-icon", url: "/apple-touch-icon.png" },
+      { rel: "msapplication-config", url: "/browserconfig.xml" },
+    ],
+  },
+  manifest: "/site.webmanifest",
 };
 
 export default function RootLayout({

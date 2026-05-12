@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { useAdminOrders, useUpdateOrderStatus } from "@/hooks/useOrders";
 import { OrderStatus, Order } from "@/lib/services/orders";
 
@@ -86,6 +87,27 @@ function OrderDetailsModal({
   isUpdating: boolean;
 }) {
   const [selectedStatus, setSelectedStatus] = useState<OrderStatus | "">("");
+
+  const locationAvailable = order?.userLat != null && order?.userLng != null;
+  const locationSourceLabel = order?.locationSource === 'gps'
+    ? 'GPS Location'
+    : order?.locationSource === 'manual'
+      ? 'Manual Address'
+      : 'Not available';
+  const openMapsUrl = locationAvailable
+    ? `https://maps.google.com/?q=${order.userLat},${order.userLng}`
+    : undefined;
+
+  const handleCopyCoordinates = async () => {
+    if (!locationAvailable) return;
+    try {
+      await navigator.clipboard.writeText(`${order.userLat},${order.userLng}`);
+      toast.success('Coordinates copied to clipboard');
+    } catch (err) {
+      console.error('Copy failed', err);
+      toast.error('Failed to copy coordinates');
+    }
+  };
 
   if (!isOpen || !order) return null;
 
@@ -213,16 +235,52 @@ function OrderDetailsModal({
                     Delivery Address
                   </h3>
                   <p className="text-gray-900 font-medium mb-3">{order.address}</p>
-                  {order.userLat && order.userLng && (
-                    <a
-                      href={`https://www.google.com/maps/search/?api=1&query=${order.userLat},${order.userLng}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white text-orange-600 border border-orange-200 hover:bg-orange-50 font-semibold rounded-lg text-xs transition-colors"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/></svg>
-                      Open in Google Maps
-                    </a>
+                  {locationAvailable ? (
+                    <div className="space-y-4">
+                      <div className="rounded-2xl border border-orange-200 bg-orange-50 p-4">
+                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                          <div>
+                            <p className="text-xs uppercase tracking-[0.18em] text-gray-500 mb-1">Coordinates</p>
+                            <p className="font-semibold text-gray-900">{order.userLat}, {order.userLng}</p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={handleCopyCoordinates}
+                            className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 bg-white text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+                          >
+                            Copy
+                          </button>
+                        </div>
+                        <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                          <div>
+                            <p className="text-xs uppercase tracking-[0.18em] text-gray-500 mb-1">Source</p>
+                            <span className="inline-flex items-center rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-orange-700 border border-orange-200">
+                              {locationSourceLabel}
+                            </span>
+                          </div>
+                          <a
+                            href={openMapsUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-orange-600 text-white text-sm font-semibold hover:bg-orange-700 transition-colors"
+                          >
+                            <span>Open Location</span>
+                          </a>
+                        </div>
+                      </div>
+                      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
+                        <iframe
+                          src={`https://maps.google.com/?q=${order.userLat},${order.userLng}&output=embed`}
+                          title="Customer location preview"
+                          className="w-full h-48"
+                          loading="lazy"
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="rounded-2xl border border-orange-200 bg-orange-50 p-4 text-sm text-orange-700">
+                      Coordinates not available. This order was placed using a manual address entry.
+                    </div>
                   )}
                 </div>
               ) : (
@@ -540,8 +598,10 @@ export default function OrdersPage() {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">{order.customerName}</div>
                     <div className="text-sm text-gray-600">{order.phone}</div>
-                    {order.fulfillmentType === 'DELIVERY' && order.address && (
-                      <div className="text-xs text-gray-500 mt-1 max-w-xs truncate">{order.address}</div>
+                    {order.fulfillmentType === 'DELIVERY' && (order.deliveryAddress || order.address) && (
+                      <div className="text-xs text-gray-500 mt-1 max-w-xs truncate">
+                        {order.deliveryAddress || order.address}
+                      </div>
                     )}
                     {order.fulfillmentType === 'PICKUP' && order.branch && (
                       <div className="text-xs text-teal-600 mt-1 font-semibold">🏪 {order.branch.name}</div>

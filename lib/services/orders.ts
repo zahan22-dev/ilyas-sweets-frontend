@@ -20,9 +20,12 @@ export interface Order {
   customerName: string;
   phone: string;
   address?: string;
+  deliveryAddress?: string;
+  googleMapsUrl?: string;
   notes?: string;
   userLat?: number;
   userLng?: number;
+  locationSource?: 'gps' | 'manual';
   totalAmount: number;
   status: OrderStatus;
   fulfillmentType: FulfillmentType;
@@ -66,9 +69,16 @@ export interface CreateOrderDto {
     customValue?: number;
   }[];
   cartId?: number;
+  couponCode?: string;
+  deliveryFee?: number;
   fulfillmentType?: FulfillmentType;
   paymentMethod?: PaymentMethod;
   branchId?: number;
+  deliveryAddress?: string;
+  googleMapsUrl?: string;
+  userLat?: number;
+  userLng?: number;
+  locationSource?: 'gps' | 'manual';
 }
 
 export interface UpdateOrderStatusDto {
