@@ -18,7 +18,7 @@ export default function AdminLayout({
   const [notifOpen, setNotifOpen] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
   const logout = useLogout();
-  const { notifications, unreadCount, markAllRead, clearAll } =
+  const { notifications, unreadCount, markAllRead, clearAll, browserPermission, requestBrowserPermission } =
     useAdminNotifications();
 
   const navigation = [
@@ -27,6 +27,7 @@ export default function AdminLayout({
     { name: "Categories", href: "/admin/categories", icon: "📁" },
     { name: "Orders", href: "/admin/orders", icon: "📦" },
     { name: "Branches", href: "/admin/branches", icon: "🏪" },
+    { name: "Delivery Settings", href: "/admin/delivery-settings", icon: "🚚" },
     { name: "Coupons", href: "/admin/coupons", icon: "🎟️" },
     { name: "Hero Banners", href: "/admin/hero-banners", icon: "🎨" },
   ];
@@ -129,8 +130,20 @@ export default function AdminLayout({
               </h2>
             </div>
 
-            {/* Notification Bell */}
-            <div className="relative" ref={notifRef}>
+            <div className="flex items-center gap-4">
+              {/* Browser Notifications Request */}
+              {browserPermission === "default" && (
+                <button
+                  onClick={requestBrowserPermission}
+                  className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg text-sm font-semibold transition-colors border border-blue-200"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                  Enable Notifications
+                </button>
+              )}
+
+              {/* Notification Bell */}
+              <div className="relative" ref={notifRef}>
               <button
                 onClick={handleNotifOpen}
                 className="relative p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
@@ -223,6 +236,7 @@ export default function AdminLayout({
               )}
             </div>
           </div>
+        </div>
 
           {/* Page Content */}
           <main className="p-6">{children}</main>

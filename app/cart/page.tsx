@@ -27,8 +27,6 @@ export default function Cart() {
 
   const cartItems = cart?.items || [];
   const subtotal = getTotalPrice();
-  const deliveryFee = 150;
-  const total = subtotal + deliveryFee;
 
   return (
     <main className="bg-[#FEFFFF] min-h-screen pt-28 md:pt-40 pb-24 md:pb-40 overflow-x-hidden">
@@ -255,21 +253,21 @@ export default function Cart() {
 
                   <div className="flex justify-between items-center text-white/80 gap-4">
                     <span>Delivery</span>
-                    <span className="text-right">Rs. {deliveryFee}</span>
+                    <span className="text-right text-sm italic">Calculated at checkout</span>
                   </div>
 
                   <div className="flex justify-between items-center text-[#FFC702] gap-4">
                     <span>Discount</span>
-                    <span className="text-right">- Rs. 0</span>
+                    <span className="text-right text-sm italic">Applied at checkout</span>
                   </div>
 
                   <div className="pt-5 border-t-2 border-white/10 flex justify-between items-center gap-4">
                     <span className="text-lg md:text-2xl uppercase tracking-widest">
-                      Total
+                      Subtotal
                     </span>
 
                     <span className="text-3xl md:text-4xl font-black text-[#FFC702] text-right break-words">
-                      Rs. {total}
+                      Rs. {subtotal}
                     </span>
                   </div>
                 </div>

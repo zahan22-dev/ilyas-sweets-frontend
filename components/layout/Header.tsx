@@ -75,8 +75,33 @@ export default function Header() {
   return (
     <>
       {/* Delivery Availability Stripe */}
-      <div className="bg-red-600 text-white text-center py-2 text-sm font-medium">
-        Please order between 10 am to 10 pm
+      <div className="bg-[#111111] overflow-hidden whitespace-nowrap py-2.5 relative border-b border-gray-800">
+        <div className="animate-marquee inline-block text-[#FFC702] font-black uppercase tracking-[0.2em] text-xs md:text-sm">
+          <span className="mx-4">Delivery Timing: 9:00 AM to 11:59 PM</span>
+          <span className="mx-4 text-white">•</span>
+          <span className="mx-4">Delivery Timing: 9:00 AM to 11:59 PM</span>
+          <span className="mx-4 text-white">•</span>
+          <span className="mx-4">Delivery Timing: 9:00 AM to 11:59 PM</span>
+          <span className="mx-4 text-white">•</span>
+          <span className="mx-4">Delivery Timing: 9:00 AM to 11:59 PM</span>
+          <span className="mx-4 text-white">•</span>
+          <span className="mx-4">Delivery Timing: 9:00 AM to 11:59 PM</span>
+          <span className="mx-4 text-white">•</span>
+          <span className="mx-4">Delivery Timing: 9:00 AM to 11:59 PM</span>
+        </div>
+        <div className="animate-marquee inline-block text-[#FFC702] font-black uppercase tracking-[0.2em] text-xs md:text-sm absolute top-2.5">
+          <span className="mx-4">Delivery Timing: 9:00 AM to 11:59 PM</span>
+          <span className="mx-4 text-white">•</span>
+          <span className="mx-4">Delivery Timing: 9:00 AM to 11:59 PM</span>
+          <span className="mx-4 text-white">•</span>
+          <span className="mx-4">Delivery Timing: 9:00 AM to 11:59 PM</span>
+          <span className="mx-4 text-white">•</span>
+          <span className="mx-4">Delivery Timing: 9:00 AM to 11:59 PM</span>
+          <span className="mx-4 text-white">•</span>
+          <span className="mx-4">Delivery Timing: 9:00 AM to 11:59 PM</span>
+          <span className="mx-4 text-white">•</span>
+          <span className="mx-4">Delivery Timing: 9:00 AM to 11:59 PM</span>
+        </div>
       </div>
 
       <header className="relative bg-white border-b border-gray-100">

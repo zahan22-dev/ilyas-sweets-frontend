@@ -212,7 +212,18 @@ function OrderDetailsModal({
                     </svg>
                     Delivery Address
                   </h3>
-                  <p className="text-gray-900 font-medium">{order.address}</p>
+                  <p className="text-gray-900 font-medium mb-3">{order.address}</p>
+                  {order.userLat && order.userLng && (
+                    <a
+                      href={`https://www.google.com/maps/search/?api=1&query=${order.userLat},${order.userLng}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white text-orange-600 border border-orange-200 hover:bg-orange-50 font-semibold rounded-lg text-xs transition-colors"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/></svg>
+                      Open in Google Maps
+                    </a>
+                  )}
                 </div>
               ) : (
                 <div className="bg-teal-50 rounded-xl p-5 border border-teal-100">

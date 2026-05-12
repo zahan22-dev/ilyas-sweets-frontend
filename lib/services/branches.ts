@@ -5,6 +5,8 @@ export interface Branch {
   name: string;
   address: string;
   phone: string;
+  latitude?: number | null;
+  longitude?: number | null;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -14,6 +16,8 @@ export interface CreateBranchDto {
   name: string;
   address: string;
   phone: string;
+  latitude?: number | null;
+  longitude?: number | null;
   isActive?: boolean;
 }
 
@@ -21,6 +25,8 @@ export interface UpdateBranchDto {
   name?: string;
   address?: string;
   phone?: string;
+  latitude?: number | null;
+  longitude?: number | null;
   isActive?: boolean;
 }
 

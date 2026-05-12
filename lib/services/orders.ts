@@ -21,6 +21,8 @@ export interface Order {
   phone: string;
   address?: string;
   notes?: string;
+  userLat?: number;
+  userLng?: number;
   totalAmount: number;
   status: OrderStatus;
   fulfillmentType: FulfillmentType;

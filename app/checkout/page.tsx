@@ -3,14 +3,22 @@
 import { useState, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import { useCartContext } from '@/providers/CartProvider';
 import { PaymentInstructionsModal } from '@/components/payment/PaymentInstructionsModal';
 import { apiClient } from '@/lib/axios';
 import toast from 'react-hot-toast';
 import type { FulfillmentType } from '@/lib/services/orders';
 import { useBranches } from '@/hooks/useBranches';
+import { useCalculateDelivery } from '@/hooks/useDelivery';
+import type { DeliveryCalculationResult } from '@/lib/services/delivery';
 
-const DELIVERY_FEE = 150; // Kept in sync with backend DELIVERY_FEE env var
+const MapPicker = dynamic(() => import('@/components/MapPicker'), {
+  ssr: false,
+  loading: () => <div className="h-[300px] bg-gray-100 animate-pulse rounded-2xl flex items-center justify-center text-gray-400">Loading map...</div>
+});
+
+const FALLBACK_DELIVERY_FEE = 150; // Used when no geolocation is available
 
 type PaymentMethod = 'COD' | 'ONLINE_PAYMENT';
 
@@ -69,13 +77,24 @@ export default function Checkout() {
   const [couponLoading, setCouponLoading] = useState(false);
 
   const { data: branches } = useBranches();
+  const calculateDelivery = useCalculateDelivery();
+
+  // ── Geolocation & Dynamic Delivery ───────────────────────────────────────
+  const [deliveryResult, setDeliveryResult] = useState<DeliveryCalculationResult | null>(null);
+  const [geoLoading, setGeoLoading] = useState(false);
+  const [userCoords, setUserCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [showMap, setShowMap] = useState(false);
 
   // ── Derived Values ────────────────────────────────────────────────────────
   const cartItems = cart?.items || [];
   const subtotal = getTotalPrice();
   const discountAmount = couponInfo?.discountAmount || 0;
   const isDelivery = fulfillmentType === 'DELIVERY';
-  const deliveryFee = isDelivery ? DELIVERY_FEE : 0;
+  const hasAddress = formData.address.trim().length > 0;
+  // Use dynamically calculated fee when available, otherwise fall back if address is typed
+  const deliveryFee = isDelivery
+    ? (deliveryResult ? deliveryResult.fee : (hasAddress ? FALLBACK_DELIVERY_FEE : 0))
+    : 0;
   const totalBeforeDiscount = subtotal + deliveryFee;
   const total = Math.max(totalBeforeDiscount - discountAmount, 0);
 
@@ -103,6 +122,88 @@ export default function Checkout() {
       setCouponLoading(false);
     }
   };
+
+  /**
+   * Request browser geolocation and calculate delivery fee.
+   */
+  const handleGetLocation = useCallback(async () => {
+    if (!navigator.geolocation) {
+      toast.error('Geolocation is not supported by your browser');
+      return;
+    }
+    setGeoLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude: lat, longitude: lng } = position.coords;
+        setUserCoords({ lat, lng });
+        try {
+          const result = await calculateDelivery.mutateAsync({ lat, lng });
+          setDeliveryResult(result);
+          setShowMap(true);
+          
+          if (result.branchId && fulfillmentType === 'PICKUP') {
+            setSelectedBranchId(result.branchId);
+          }
+
+          try {
+            const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`);
+            const geoData = await geoRes.json();
+            if (geoData && geoData.address) {
+              const area = geoData.address.suburb || geoData.address.city_district || geoData.address.town || geoData.address.city || '';
+              
+              setFormData(prev => ({
+                ...prev,
+                address: prev.address.trim() ? prev.address : "Your Current Location",
+                area: area || prev.area
+              }));
+            }
+          } catch (e) {
+            console.warn("Reverse geocoding failed", e);
+          }
+
+          toast.success(
+            `📍 Location mapped! Adjust the pin if needed. Delivery via ${result.branchName}`,
+            { duration: 5000 },
+          );
+        } catch (err: any) {
+          toast.error(err.message || 'Could not calculate delivery fee');
+        } finally {
+          setGeoLoading(false);
+        }
+      },
+      (error) => {
+        setGeoLoading(false);
+        const messages: Record<number, string> = {
+          1: 'Location permission denied. Please enter your address manually.',
+          2: 'Location unavailable. Please enter your address manually.',
+          3: 'Location request timed out. Please try again.',
+        };
+        toast.error(messages[error.code] || 'Could not get location');
+      },
+      { timeout: 10000, maximumAge: 300000 },
+    );
+  }, [calculateDelivery, fulfillmentType]);
+
+  const handleMapPinChange = useCallback(async (lat: number, lng: number) => {
+    setUserCoords({ lat, lng });
+    try {
+      const result = await calculateDelivery.mutateAsync({ lat, lng });
+      setDeliveryResult(result);
+      
+      const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`);
+      const geoData = await geoRes.json();
+      if (geoData && geoData.address) {
+        const area = geoData.address.suburb || geoData.address.city_district || geoData.address.town || geoData.address.city || '';
+        setFormData(prev => ({
+          ...prev,
+          address: prev.address.trim() && prev.address !== "Your Current Location" ? prev.address : "Pinned Location",
+          area: area || prev.area
+        }));
+      }
+    } catch (e) {
+      // Slient fail on drag
+    }
+  }, [calculateDelivery]);
 
   /**
    * Validates the form and builds the order payload.
@@ -144,6 +245,9 @@ export default function Checkout() {
       paymentMethod: formData.paymentMethod,
       branchId: !isDelivery ? selectedBranchId : undefined,
       couponCode: couponInfo?.couponCode ?? undefined,
+      deliveryFee: isDelivery ? deliveryFee : undefined,
+      userLat: userCoords?.lat ?? undefined,
+      userLng: userCoords?.lng ?? undefined,
       items: cartItems.map((item: any) => ({
         productId: item.product.id,
         variantId: item.variant?.id ?? undefined,
@@ -162,6 +266,8 @@ export default function Checkout() {
     cartId,
     fulfillmentType,
     couponInfo,
+    deliveryFee,
+    userCoords,
   ]);
 
   /**
@@ -361,9 +467,6 @@ export default function Checkout() {
                     <div className="font-bold text-[#111111] text-sm sm:text-base">
                       🚚 Delivery
                     </div>
-                    <div className="text-xs sm:text-sm text-gray-500 mt-1">
-                      To your door · Rs.{DELIVERY_FEE} fee
-                    </div>
                   </button>
                   <button
                     type="button"
@@ -411,9 +514,23 @@ export default function Checkout() {
               {/* Address */}
               {isDelivery && (
                 <div className="bg-white p-4 sm:p-6 lg:p-8 rounded-2xl shadow-sm border border-gray-100">
-                  <h2 className="text-lg sm:text-xl lg:text-2xl font-black uppercase mb-4 lg:mb-6">
-                    Delivery Address
-                  </h2>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 lg:mb-6 gap-3">
+                    <h2 className="text-lg sm:text-xl lg:text-2xl font-black uppercase">
+                      Delivery Address
+                    </h2>
+                    <button
+                      type="button"
+                      onClick={handleGetLocation}
+                      disabled={geoLoading}
+                      className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 font-bold rounded-lg hover:bg-blue-100 transition-colors disabled:opacity-50 border border-blue-200 text-sm"
+                    >
+                      {geoLoading ? (
+                        <span className="w-4 h-4 border-2 border-blue-700 border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <span>📍 Use Current Location</span>
+                      )}
+                    </button>
+                  </div>
                   <div className="space-y-3">
                     <input
                       required
@@ -442,6 +559,20 @@ export default function Checkout() {
                       />
                     </div>
                   </div>
+                  
+                  {showMap && userCoords && (
+                    <div className="mt-4 pt-4 border-t border-gray-100 animate-in fade-in slide-in-from-top-4">
+                      <p className="text-sm font-semibold text-gray-700 mb-3">
+                        Drag the pin to your exact delivery location:
+                      </p>
+                      <MapPicker 
+                        lat={userCoords.lat} 
+                        lng={userCoords.lng} 
+                        onChange={handleMapPinChange} 
+                        height="250px" 
+                      />
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -641,9 +772,18 @@ export default function Checkout() {
                   <span>Rs.{Math.round(subtotal)}</span>
                 </div>
                 {isDelivery && (
-                  <div className="flex justify-between text-gray-300">
-                    <span>Delivery</span>
-                    <span>Rs.{deliveryFee}</span>
+                  <div className="flex justify-between text-gray-300 items-center">
+                    <span className="flex items-center gap-2">
+                      Delivery
+                      {deliveryResult && (
+                        <span className="text-xs bg-white/10 px-2 py-0.5 rounded-full text-gray-400 font-normal tracking-wide">
+                          {deliveryResult.distanceKm} km
+                        </span>
+                      )}
+                    </span>
+                    <span>
+                      {deliveryResult || hasAddress ? `Rs.${Math.round(deliveryFee)}` : <span className="text-xs italic text-gray-400">Pending location...</span>}
+                    </span>
                   </div>
                 )}
                 {discountAmount > 0 && (

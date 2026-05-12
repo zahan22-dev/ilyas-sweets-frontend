@@ -1,18 +1,26 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from 'next/dynamic';
 import { useAdminBranches, useCreateBranch, useUpdateBranch, useDeleteBranch } from "@/hooks/useBranches";
 import { Branch } from "@/lib/services/branches";
 import toast from "react-hot-toast";
+
+const MapPicker = dynamic(() => import('@/components/MapPicker'), {
+  ssr: false,
+  loading: () => <div className="h-[200px] bg-gray-100 animate-pulse rounded-lg flex items-center justify-center text-gray-400">Loading map...</div>
+});
 
 interface BranchFormData {
   name: string;
   address: string;
   phone: string;
+  latitude: string;
+  longitude: string;
   isActive: boolean;
 }
 
-const EMPTY_FORM: BranchFormData = { name: "", address: "", phone: "", isActive: true };
+const EMPTY_FORM: BranchFormData = { name: "", address: "", phone: "", latitude: "", longitude: "", isActive: true };
 
 export default function BranchesPage() {
   const { data: branches, isLoading, isError } = useAdminBranches();
@@ -23,6 +31,38 @@ export default function BranchesPage() {
   const [editingBranch, setEditingBranch] = useState<Branch | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState<BranchFormData>(EMPTY_FORM);
+  const [isGeocoding, setIsGeocoding] = useState(false);
+
+  async function fetchCoordinates() {
+    if (!form.address) {
+      toast.error("Please enter a full address first");
+      return;
+    }
+    setIsGeocoding(true);
+    try {
+      // Add Karachi, Pakistan to the query to improve accuracy if not present
+      const query = form.address.toLowerCase().includes('karachi') 
+        ? form.address 
+        : `${form.address}, Karachi, Pakistan`;
+        
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`);
+      const data = await res.json();
+      if (data && data.length > 0) {
+        setForm(prev => ({
+          ...prev,
+          latitude: data[0].lat,
+          longitude: data[0].lon
+        }));
+        toast.success("Coordinates found!");
+      } else {
+        toast.error("Could not find coordinates. Try being more specific.");
+      }
+    } catch (err) {
+      toast.error("Failed to fetch coordinates");
+    } finally {
+      setIsGeocoding(false);
+    }
+  }
 
   function openCreate() {
     setEditingBranch(null);
@@ -32,7 +72,14 @@ export default function BranchesPage() {
 
   function openEdit(branch: Branch) {
     setEditingBranch(branch);
-    setForm({ name: branch.name, address: branch.address, phone: branch.phone, isActive: branch.isActive });
+    setForm({ 
+      name: branch.name, 
+      address: branch.address, 
+      phone: branch.phone, 
+      latitude: branch.latitude?.toString() || "",
+      longitude: branch.longitude?.toString() || "",
+      isActive: branch.isActive 
+    });
     setShowForm(true);
   }
 
@@ -50,11 +97,17 @@ export default function BranchesPage() {
     }
 
     try {
+      const payload = {
+        ...form,
+        latitude: form.latitude ? Number(form.latitude) : null,
+        longitude: form.longitude ? Number(form.longitude) : null,
+      };
+
       if (editingBranch) {
-        await updateBranch.mutateAsync({ id: editingBranch.id, data: form });
+        await updateBranch.mutateAsync({ id: editingBranch.id, data: payload });
         toast.success("Branch updated!");
       } else {
-        await createBranch.mutateAsync(form);
+        await createBranch.mutateAsync(payload);
         toast.success("Branch created!");
       }
       closeForm();
@@ -144,6 +197,55 @@ export default function BranchesPage() {
                   required
                 />
               </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-2">
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-sm font-semibold text-gray-700">Location Coordinates</label>
+                    <button
+                      type="button"
+                      onClick={fetchCoordinates}
+                      disabled={isGeocoding || !form.address}
+                      className="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded hover:bg-blue-100 disabled:opacity-50 transition-colors font-semibold"
+                    >
+                      {isGeocoding ? "Fetching..." : "📍 Fetch from Address"}
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">Latitude</label>
+                  <input
+                    type="number"
+                    step="any"
+                    value={form.latitude}
+                    onChange={(e) => setForm({ ...form, latitude: e.target.value })}
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                    placeholder="e.g. 24.8607"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">Longitude</label>
+                  <input
+                    type="number"
+                    step="any"
+                    value={form.longitude}
+                    onChange={(e) => setForm({ ...form, longitude: e.target.value })}
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                    placeholder="e.g. 67.0011"
+                  />
+                </div>
+              </div>
+              
+              {form.latitude && form.longitude && (
+                <div className="mt-2 border border-gray-200 rounded-lg overflow-hidden animate-in fade-in">
+                  <MapPicker 
+                    lat={Number(form.latitude)} 
+                    lng={Number(form.longitude)} 
+                    onChange={(lat, lng) => setForm(prev => ({ ...prev, latitude: lat.toString(), longitude: lng.toString() }))}
+                    height="200px"
+                  />
+                </div>
+              )}
+
               <div className="flex items-center gap-3">
                 <input
                   type="checkbox"
@@ -198,7 +300,14 @@ export default function BranchesPage() {
               </div>
 
               {/* Info */}
-              <h3 className="text-lg font-bold text-gray-900 mb-1">{branch.name}</h3>
+              <h3 className="text-lg font-bold text-gray-900 mb-1">
+                {branch.name}
+                {branch.latitude && branch.longitude && (
+                  <span className="ml-2 inline-flex items-center text-xs font-normal text-blue-600 bg-blue-50 px-2 py-0.5 rounded" title={`Lat: ${branch.latitude}, Lng: ${branch.longitude}`}>
+                    📍 Mapped
+                  </span>
+                )}
+              </h3>
               <p className="text-sm text-gray-600 mb-1 flex items-start gap-1.5">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mt-0.5 shrink-0 text-gray-400"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
                 {branch.address}

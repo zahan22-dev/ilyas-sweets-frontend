@@ -62,7 +62,24 @@ function getSocket(): Socket {
 export function useAdminNotifications() {
   const [notifications, setNotifications] = useState<OrderNotification[]>([]);
   const [isConnected, setIsConnected] = useState(false);
+  const [browserPermission, setBrowserPermission] = useState<NotificationPermission>('default');
   const listenerAttached = useRef(false);
+
+  // Initialize browser notification permission state
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'Notification' in window) {
+      setBrowserPermission(Notification.permission);
+    }
+  }, []);
+
+  const requestBrowserPermission = useCallback(async () => {
+    if (typeof window !== 'undefined' && 'Notification' in window) {
+      const permission = await Notification.requestPermission();
+      setBrowserPermission(permission);
+      return permission;
+    }
+    return 'denied';
+  }, []);
 
   // Load persisted notifications from localStorage on mount
   useEffect(() => {
@@ -105,6 +122,24 @@ export function useAdminNotifications() {
         saveToStorage(updated);
         return updated;
       });
+
+      // Fire Browser Notification if permitted
+      if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+        try {
+          const notif = new Notification('New Order Received! 🛒', {
+            body: `${payload.customerName} placed an order for Rs. ${payload.totalAmount}`,
+            icon: '/favicon.ico', // fallback icon
+          });
+
+          notif.onclick = () => {
+            window.focus();
+            // The router.push to /admin/orders will be handled by the click on the layout,
+            // or the admin is already there. If we had the Next router here we could push.
+          };
+        } catch (e) {
+          console.warn('Browser notification failed:', e);
+        }
+      }
     };
 
     // Attach listeners only once — avoid duplicate handlers on rerender
@@ -162,6 +197,8 @@ export function useAdminNotifications() {
     notifications,
     unreadCount,
     isConnected,
+    browserPermission,
+    requestBrowserPermission,
     markAllRead,
     clearAll,
     disconnect,
