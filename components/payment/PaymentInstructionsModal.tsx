@@ -121,7 +121,7 @@ export function PaymentInstructionsModal({
             <p className="font-semibold text-blue-900 text-sm">After payment:</p>
             <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
               <li>Save the payment screenshot</li>
-              <li>Send screenshot on WhatsApp: <span className="font-semibold">+92 333 2211186</span></li>
+              <li>Send screenshot on WhatsApp: <span className="font-semibold">+92 300 4600839</span></li>
               <li>Then click Continue Order below</li>
             </ol>
           </div>
