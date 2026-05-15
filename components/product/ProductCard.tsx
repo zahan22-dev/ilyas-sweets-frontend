@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useState, useMemo } from 'react';
 
 export interface Product {
   id: string | number;
@@ -55,10 +56,16 @@ export default function ProductCard({
   showCategory = false,
 }: ProductCardProps) {
   const price = getDisplayPrice(product);
-  const featuredImage =
-    product.images?.find((img) => img.isFeatured)?.imageUrl ||
-    product.images?.[0]?.imageUrl ||
-    "/placeholder-product.png";
+  const resolvedImage = useMemo(() => {
+    const imgs = product.images || [];
+    const pick = (obj: any) => obj?.imageUrl || obj?.url || null;
+    const featured = imgs.find((img: any) => img.isFeatured && pick(img));
+    if (featured) return pick(featured);
+    const first = imgs.find((img: any) => pick(img));
+    if (first) return pick(first);
+    return '/placeholder-product.png';
+  }, [product.images]);
+  const [imgSrc, setImgSrc] = useState<string>(resolvedImage);
   const isOutOfStock = product.stock === 0;
   const hasVariants = (product.variants?.length ?? 0) > 1;
 
@@ -70,11 +77,14 @@ export default function ProductCard({
         className="block relative aspect-square overflow-hidden bg-gray-50"
       >
         <Image
-          src={featuredImage}
+          src={imgSrc}
           alt={product.name}
           fill
           sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
           className="object-cover group-hover:scale-105 transition-transform duration-500"
+          onError={() => {
+            if (imgSrc !== '/placeholder-product.png') setImgSrc('/placeholder-product.png');
+          }}
         />
 
         {/* Category Badge */}
