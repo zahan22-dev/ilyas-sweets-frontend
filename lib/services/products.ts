@@ -77,7 +77,6 @@ export interface UpdateProductDto {
   stock?: number;
   images?: { url: string; isFeatured: boolean }[];
   variants?: {
-    id?: number;
     label: string;
     price: number;
   }[];

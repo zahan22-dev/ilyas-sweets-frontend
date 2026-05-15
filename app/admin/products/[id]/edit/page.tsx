@@ -156,8 +156,10 @@ export default function EditProductPage() {
           metaTitle: formData.metaTitle,
           metaDescription: formData.metaDescription,
           schema: schemaData,
-          images: formData.images,
-          variants: formData.variants.filter(v => v.label && v.price > 0),
+          images: formData.images.map((img) => ({ url: img.url, isFeatured: img.isFeatured })),
+          variants: formData.variants
+            .filter((v) => v.label && v.price > 0)
+            .map((v) => ({ label: v.label, price: v.price })),
         },
       });
       router.push("/admin/products");
