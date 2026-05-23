@@ -29,6 +29,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function CategoryDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+  const isSavories = slug.toLowerCase() === 'savories';
 
   let category;
   try {
@@ -61,7 +62,7 @@ export default async function CategoryDetail({ params }: { params: Promise<{ slu
 <section className="relative overflow-hidden mb-20 rounded-b-[4rem]">
   
   {/* Banner Wrapper */}
-  <div className="relative w-full aspect-[1000/320] md:aspect-[1920/400]">
+  <div className="relative w-full min-h-[320px] md:min-h-[420px]">
     
     {/* Background Image */}
     {category.image && (
@@ -103,7 +104,7 @@ export default async function CategoryDetail({ params }: { params: Promise<{ slu
 
     {/* Content */}
     <div className="absolute inset-0 z-10 flex items-center">
-      <div className="container mx-auto px-6 lg:px-12 text-center">
+      <div className="container mx-auto px-6 lg:px-12 text-center py-12 md:py-16">
         
         <h1 className="text-5xl md:text-7xl lg:text-[7.5rem] font-black font-heading text-white tracking-tighter leading-[0.9] uppercase mb-5 drop-shadow-[0_8px_25px_rgba(0,0,0,0.35)]">
           {category.name}
@@ -118,6 +119,12 @@ export default async function CategoryDetail({ params }: { params: Promise<{ slu
           <p className="text-sm md:text-lg text-white/85 mt-5 max-w-3xl mx-auto leading-relaxed">
             {category.description}
           </p>
+        )}
+
+        {isSavories && (
+          <div className="mx-auto mt-8 max-w-3xl rounded-[2rem] border-2 border-[#FFC702] bg-[#FFF5CC] px-6 py-5 text-[#111111] font-black uppercase tracking-[0.18em] text-center shadow-lg">
+            Savories are available between 12:00 pm to 6:00 pm
+          </div>
         )}
       </div>
     </div>

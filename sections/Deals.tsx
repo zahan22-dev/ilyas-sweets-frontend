@@ -17,13 +17,17 @@ export default function DealsSection() {
             <div className="absolute top-0 right-0 w-64 h-64 bg-[#FFC702] rounded-full blur-[80px] opacity-30 group-hover:opacity-50 transition-opacity duration-500 pointer-events-none"></div>
             
             <div className="relative z-10 max-w-[80%]">
-              <div className="inline-block px-4 py-1 bg-[#FFC702] text-white text-xs font-black uppercase tracking-widest rounded-full mb-6">First Order Only</div>
+              <div className="inline-block px-4 py-1 bg-[#FFC702] text-white text-xs font-black uppercase tracking-widest rounded-full mb-6">
+                CUSTOMIZED & BULK ORDERS
+              </div>
               <h3 className="text-3xl md:text-5xl font-black text-white mb-4 leading-tight uppercase font-heading">
-                Get <span className="text-[#FFC702]">20% Off</span>
+                CATERING & BULK ORDERS
               </h3>
-              <p className="text-gray-400 font-bold mb-8">Try our premium sweets today and get an exclusive discount on your entire cart.</p>
+              <p className="text-gray-400 font-bold mb-8">
+                From premium traditional sweets to custom celebration cakes, make your weddings and parties sweeter. Order in bulk and bring the perfect taste to your special events.
+              </p>
               
-              <Link href="/shop" className="inline-flex items-center gap-2 font-black uppercase text-[#FFC702] hover:text-white transition-colors tracking-widest text-sm">
+              <Link href="https://wa.me/923004600839" className="inline-flex items-center gap-2 font-black uppercase text-[#FFC702] hover:text-white transition-colors tracking-widest text-sm">
                 Claim Offer
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
               </Link>

@@ -100,7 +100,7 @@ export default function HomeClient() {
 
       <DeliveryInfo />
       <DealsSection />
-      <Promo />
+      {/* <Promo /> */}
       <ReviewsSection />
       <About />
       <CTA />
