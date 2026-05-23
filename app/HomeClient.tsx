@@ -99,9 +99,9 @@ export default function HomeClient() {
       </div>
 
       <DeliveryInfo />
-      <DealsSection />
-      {/* <Promo /> */}
+      {/* <DealsSection /> */}
       <ReviewsSection />
+      <Promo />
       <About />
       <CTA />
     </>

@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function About() {
   return (
-    <section className="pb-30 bg-[#FEFFFF] overflow-hidden relative">
+    <section className="py-30 bg-[#FEFFFF] overflow-hidden relative">
       {/* Background Decorative Pattern */}
       <div className="absolute inset-0 opacity-[0.02] pointer-events-none">
          <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
