@@ -459,7 +459,13 @@ function OrderDetailsModal({
                   {isDelivery && (
                     <div className="flex justify-between text-gray-300">
                       <span>Delivery Fee</span>
-                      <span>Rs. {deliveryFee}</span>
+                      <span>Rs. {storedDeliveryFee}</span>
+                    </div>
+                  )}
+                  {storedDiscount > 0 && (
+                    <div className="flex justify-between text-green-400">
+                      <span>Discount {order.couponCode ? `(${order.couponCode})` : ''}</span>
+                      <span>- Rs. {storedDiscount}</span>
                     </div>
                   )}
                   <div className="border-t border-gray-700 pt-2 mt-2">
