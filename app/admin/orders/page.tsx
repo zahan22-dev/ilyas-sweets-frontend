@@ -112,8 +112,24 @@ function OrderDetailsModal({
   if (!isOpen || !order) return null;
 
   const isDelivery = order.fulfillmentType === "DELIVERY" || !order.fulfillmentType;
-  const deliveryFee = isDelivery ? 150 : 0;
-  const subtotal = Number(order.totalAmount) - deliveryFee;
+
+  // ── Ecommerce-correct accounting ──────────────────────────────────────────
+  // subtotal: sum of frozen unit prices × qty (stored in order_items at creation time)
+  // These are immutable — immune to product price changes after order creation.
+  const subtotal = order.items?.reduce(
+    (sum: number, item: any) => sum + Number(item.price) * item.quantity,
+    0
+  ) ?? 0;
+
+  // Use the stored delivery fee from the order record (frozen at creation).
+  // Do NOT hardcode 150 — it will be wrong for GPS-calculated or slab-based fees.
+  const storedDeliveryFee = Number(order.deliveryFee ?? 0);
+
+  // Use the stored discount amount from coupon applied at order creation.
+  const storedDiscount = Number(order.discountAmount ?? 0);
+
+  // Sanity: subtotal + delivery - discount should equal totalAmount.
+  // We display each component transparently so the admin can verify.
 
   const handleStatusChange = () => {
     if (selectedStatus && selectedStatus !== order.status) {

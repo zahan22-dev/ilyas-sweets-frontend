@@ -1,4 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+
+export const viewport: Viewport = {
+  themeColor: "#ffffff",
+};
 import { Inter, Poppins } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
@@ -22,7 +26,6 @@ export const metadata: Metadata = {
   title: "Ilyas Sweets | Premium Authentic Sweets & Snacks",
   description:
     "The finest premium sweets and savory snacks delivered fresh to your door. Experience authentic taste and quality.",
-  themeColor: "#ffffff",
   icons: {
     icon: [
       { url: "/favicon.ico" },

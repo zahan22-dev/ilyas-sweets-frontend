@@ -27,6 +27,13 @@ export interface Order {
   userLng?: number;
   locationSource?: 'gps' | 'manual';
   totalAmount: number;
+  /** Frozen delivery fee stored at order creation time — use this, never hardcode */
+  deliveryFee?: number;
+  /** Discount applied by coupon at order creation time */
+  discountAmount?: number;
+  /** Coupon code applied to this order */
+  couponCode?: string;
+  couponId?: number;
   status: OrderStatus;
   fulfillmentType: FulfillmentType;
   paymentMethod: PaymentMethod;
