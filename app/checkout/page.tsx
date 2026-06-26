@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
@@ -12,13 +12,12 @@ import type { FulfillmentType } from '@/lib/services/orders';
 import { useBranches } from '@/hooks/useBranches';
 import { useCalculateDelivery } from '@/hooks/useDelivery';
 import type { DeliveryCalculationResult } from '@/lib/services/delivery';
+import type { CartItem } from '@/lib/services/cart';
 
 const MapPicker = dynamic(() => import('@/components/MapPicker'), {
   ssr: false,
   loading: () => <div className="h-[300px] bg-gray-100 animate-pulse rounded-2xl flex items-center justify-center text-gray-400">Loading map...</div>
 });
-
-const FALLBACK_DELIVERY_FEE = 150; // Used when no geolocation is available
 
 type PaymentMethod = 'COD' | 'ONLINE_PAYMENT';
 
@@ -89,14 +88,12 @@ export default function Checkout() {
   const [hasLocationData, setHasLocationData] = useState(false);
 
   // ── Derived Values ────────────────────────────────────────────────────────
-  const cartItems = cart?.items || [];
+  const cartItems = useMemo<CartItem[]>(() => cart?.items ?? [], [cart?.items]);
   const subtotal = getTotalPrice();
   const discountAmount = couponInfo?.discountAmount || 0;
   const isDelivery = fulfillmentType === 'DELIVERY';
-  const hasAddress = formData.address.trim().length > 0;
-  // Use dynamically calculated fee when available, otherwise fall back if address is typed
   const deliveryFee = isDelivery
-    ? (deliveryResult ? deliveryResult.fee : (hasAddress ? FALLBACK_DELIVERY_FEE : 0))
+    ? deliveryResult?.fee ?? 0
     : 0;
   const totalBeforeDiscount = subtotal + deliveryFee;
   const total = Math.max(totalBeforeDiscount - discountAmount, 0);
@@ -110,6 +107,7 @@ export default function Checkout() {
 
     if (name === 'address' || name === 'area') {
       setLocationSource((prevSource) => (prevSource === 'gps' ? 'gps' : 'manual'));
+      setDeliveryResult(null);
     }
   };
 
@@ -123,8 +121,12 @@ export default function Checkout() {
     try {
       await applyCoupon(couponCode.trim().toUpperCase());
       setCouponCode('');
-    } catch (error: any) {
-      setCouponError(error.message || 'Invalid coupon code');
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setCouponError(error.message || 'Invalid coupon code');
+      } else {
+        setCouponError('Invalid coupon code');
+      }
     } finally {
       setCouponLoading(false);
     }
@@ -186,9 +188,13 @@ export default function Checkout() {
             `📍 Location mapped! Adjust the pin if needed. Delivery via ${result.branchName}`,
             { duration: 5000 },
           );
-        } catch (err: any) {
+        } catch (err: unknown) {
           setLocationError('Unable to calculate delivery. Please enter your address manually.');
-          toast.error(err.message || 'Could not calculate delivery fee');
+          if (err instanceof Error) {
+            toast.error(err.message || 'Could not calculate delivery fee');
+          } else {
+            toast.error('Could not calculate delivery fee');
+          }
         } finally {
           setGeoLoading(false);
         }
@@ -240,7 +246,7 @@ export default function Checkout() {
           area: prev.area.trim() ? prev.area : area,
         }));
       }
-    } catch (e) {
+    } catch {
       // Silent fail on drag
     }
   }, [calculateDelivery]);
@@ -262,6 +268,12 @@ export default function Checkout() {
       toast.error('Please provide a delivery address and area');
       return null;
     }
+
+    if (isDelivery && !deliveryResult) {
+      toast.error('Please calculate the delivery fee by using your current location or selecting your delivery pin.');
+      return null;
+    }
+
     if (!isDelivery && !selectedBranchId) {
       toast.error('Please select a pickup branch');
       return null;
@@ -304,7 +316,7 @@ export default function Checkout() {
       userLat: hasCoordinates ? userCoords!.lat : undefined,
       userLng: hasCoordinates ? userCoords!.lng : undefined,
       locationSource: payloadLocationSource,
-      items: cartItems.map((item: any) => ({
+      items: cartItems.map((item) => ({
         productId: item.product.id,
         variantId: item.variant?.id ?? undefined,
         quantity: item.quantity,
@@ -323,6 +335,7 @@ export default function Checkout() {
     fulfillmentType,
     couponInfo,
     deliveryFee,
+    deliveryResult,
     userCoords,
   ]);
 
@@ -359,9 +372,13 @@ export default function Checkout() {
 
         // Navigate after a brief delay so the toast is visible
         setTimeout(() => router.push('/shop'), 500);
-      } catch (error: any) {
+      } catch (error: unknown) {
         // Axios interceptor wraps errors as `new Error(message)` — use error.message
-        toast.error(error.message || 'Failed to place order. Please try again.');
+        if (error instanceof Error) {
+          toast.error(error.message || 'Failed to place order. Please try again.');
+        } else {
+          toast.error('Failed to place order. Please try again.');
+        }
       } finally {
         isSubmittingRef.current = false;
         setIsSubmitting(false);
@@ -763,7 +780,7 @@ export default function Checkout() {
 
               {/* Items */}
               <div className="space-y-2 mb-4 max-h-48 sm:max-h-64 overflow-y-auto">
-                {cartItems.map((item: any) => {
+                {cartItems.map((item) => {
                   const price =
                     item.variant?.price != null
                       ? Number(item.variant.price)
@@ -861,7 +878,7 @@ export default function Checkout() {
                       )}
                     </span>
                     <span>
-                      {deliveryResult || hasAddress ? `Rs.${Math.round(deliveryFee)}` : <span className="text-xs italic text-gray-400">Pending location...</span>}
+                      {deliveryResult ? `Rs.${Math.round(deliveryFee)}` : <span className="text-xs italic text-gray-400">Delivery fee pending</span>}
                     </span>
                   </div>
                 )}

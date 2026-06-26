@@ -2,6 +2,12 @@ import axios from 'axios';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 
+if (process.env.NODE_ENV === 'production' && !process.env.NEXT_PUBLIC_API_URL) {
+  console.error(
+    '[API] NEXT_PUBLIC_API_URL is not set in production. Falling back to localhost:3001/api may break live backend requests.',
+  );
+}
+
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
   timeout: 30000,
