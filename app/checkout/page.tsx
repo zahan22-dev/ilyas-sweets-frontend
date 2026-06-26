@@ -86,6 +86,7 @@ export default function Checkout() {
   const [locationSource, setLocationSource] = useState<'gps' | 'manual' | undefined>(undefined);
   const [locationError, setLocationError] = useState<string | null>(null);
   const [showMap, setShowMap] = useState(false);
+  const [hasLocationData, setHasLocationData] = useState(false);
 
   // ── Derived Values ────────────────────────────────────────────────────────
   const cartItems = cart?.items || [];
@@ -147,6 +148,7 @@ export default function Checkout() {
         const { latitude: lat, longitude: lng } = position.coords;
         setUserCoords({ lat, lng });
         setLocationSource('gps');
+        setHasLocationData(true);
 
         try {
           const result = await calculateDelivery.mutateAsync({ lat, lng });
@@ -193,6 +195,7 @@ export default function Checkout() {
       },
       (error) => {
         setGeoLoading(false);
+        setHasLocationData(true);
         let message = 'Could not get location';
 
         const messages: Record<number, string> = {
@@ -584,64 +587,70 @@ export default function Checkout() {
                       )}
                     </button>
                   </div>
-                  {locationError && (
-                    <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-                      {locationError}
-                    </div>
-                  )}
-                  <div className="space-y-3">
-                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                      <p className="text-sm text-gray-600">
-                        {locationSource === 'gps'
-                          ? 'GPS coordinates captured. You can adjust the pin if needed.'
-                          : 'You can use your current location or enter address manually.'}
-                      </p>
-                      {locationSource && (
-                        <span className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
-                          {locationSource === 'gps' ? 'GPS Location' : 'Manual Address'}
-                        </span>
-                      )}
-                    </div>
-                    <input
-                      required
-                      type="text"
-                      name="address"
-                      value={formData.address}
-                      onChange={handleInputChange}
-                      placeholder="Street Address *"
-                      className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm font-medium outline-none focus:border-[#FFC702] transition-colors"
-                    />
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <input
-                        type="text"
-                        defaultValue="Karachi"
-                        readOnly
-                        className="bg-gray-100 border border-gray-200 rounded-lg px-4 py-3 text-sm font-medium text-gray-500 cursor-not-allowed"
-                      />
-                      <input
-                        required
-                        type="text"
-                        name="area"
-                        value={formData.area}
-                        onChange={handleInputChange}
-                        placeholder="Area / Block *"
-                        className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm font-medium outline-none focus:border-[#FFC702] transition-colors"
-                      />
-                    </div>
-                  </div>
                   
-                  {showMap && userCoords && (
-                    <div className="mt-4 pt-4 border-t border-gray-100 animate-in fade-in slide-in-from-top-4">
-                      <p className="text-sm font-semibold text-gray-700 mb-3">
-                        Drag the pin to your exact delivery location:
-                      </p>
-                      <MapPicker 
-                        lat={userCoords.lat} 
-                        lng={userCoords.lng} 
-                        onChange={handleMapPinChange} 
-                        height="250px" 
-                      />
-                    </div>
+                  {/* Address fields appear only after getting location data */}
+                  {hasLocationData && (
+                    <>
+                      {locationError && (
+                        <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                          {locationError}
+                        </div>
+                      )}
+                      <div className="space-y-3 animate-in fade-in slide-in-from-top-4">
+                        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                          <p className="text-sm text-gray-600">
+                            {locationSource === 'gps'
+                              ? 'GPS coordinates captured. You can adjust the address if needed.'
+                              : 'You can edit your address below.'}
+                          </p>
+                          {locationSource && (
+                            <span className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
+                              {locationSource === 'gps' ? 'GPS Location' : 'Manual Address'}
+                            </span>
+                          )}
+                        </div>
+                        <input
+                          required
+                          type="text"
+                          name="address"
+                          value={formData.address}
+                          onChange={handleInputChange}
+                          placeholder="Street Address *"
+                          className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm font-medium outline-none focus:border-[#FFC702] transition-colors"
+                        />
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <input
+                            type="text"
+                            defaultValue="Karachi"
+                            readOnly
+                            className="bg-gray-100 border border-gray-200 rounded-lg px-4 py-3 text-sm font-medium text-gray-500 cursor-not-allowed"
+                          />
+                          <input
+                            required
+                            type="text"
+                            name="area"
+                            value={formData.area}
+                            onChange={handleInputChange}
+                            placeholder="Area / Block *"
+                            className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm font-medium outline-none focus:border-[#FFC702] transition-colors"
+                          />
+                        </div>
+                      </div>
+                      
+                      {showMap && userCoords && (
+                        <div className="mt-4 pt-4 border-t border-gray-100 animate-in fade-in slide-in-from-top-4">
+                          <p className="text-sm font-semibold text-gray-700 mb-3">
+                            Drag the pin to your exact delivery location:
+                          </p>
+                          <MapPicker 
+                            lat={userCoords.lat} 
+                            lng={userCoords.lng} 
+                            onChange={handleMapPinChange} 
+                            height="250px" 
+                          />
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
               )}
